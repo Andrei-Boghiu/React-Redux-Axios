@@ -24,7 +24,6 @@ function Login() {
 			if (token && role && id) {
 				login(token, role, email, id)
 				navigate('/dashboard')
-				console.log('Login successful:', response.data)
 			} else {
 				console.error('Login failed: Incomplete data received')
 				alert('Failed to log in, please try again.')
