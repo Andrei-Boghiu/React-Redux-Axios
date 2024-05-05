@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 function Dashboard() {
 	const [workItems, setWorkItems] = useState([])
-	const { logout } = useAuth()
+	const { logout, userRole, userEmail, userId } = useAuth()
 
 	useEffect(() => {
 		const fetchWorkItems = async () => {
@@ -28,6 +28,10 @@ function Dashboard() {
 		<div>
 			<h1>Dashboard</h1>
 			<p>Welcome to your dashboard!</p>
+			<p>Email: {userEmail}</p>
+			<p>Role: {userRole}</p>
+			<p>Id: {userId}</p>
+			<hr />
 			<div>
 				<h2>In Progress Work Items</h2>
 				<ul>

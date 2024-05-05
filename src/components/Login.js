@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext' // Ensure this is imported
+import { useAuth } from '../context/AuthContext'
 
 function Login() {
 	const [email, setEmail] = useState('')
@@ -16,9 +16,19 @@ function Login() {
 				email,
 				password,
 			})
-			login(response.data.token)
-			navigate('/dashboard')
-			console.log('Login successful:', response.data)
+
+			const {
+				token,
+				user: { id, role },
+			} = response.data
+			if (token && role && id) {
+				login(token, role, email, id)
+				navigate('/dashboard')
+				console.log('Login successful:', response.data)
+			} else {
+				console.error('Login failed: Incomplete data received')
+				alert('Failed to log in, please try again.')
+			}
 		} catch (error) {
 			console.error('Login failed:', error.response ? error.response.data : 'Server error')
 			alert('Failed to log in, please check your credentials and try again.')
