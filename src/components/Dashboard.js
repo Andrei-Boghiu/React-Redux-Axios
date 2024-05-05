@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 
@@ -32,6 +33,18 @@ function Dashboard() {
 			<p>Role: {userRole}</p>
 			<p>Id: {userId}</p>
 			<hr />
+			{userRole === 'admin' || userRole === 'manager' ? (
+				<div>
+					<h2>Admin Actions</h2>
+					<div>
+						<Link to='/user-management'>User Management</Link>
+						<Link to='/work-items-management'>Work Items Management</Link>
+						<Link to='/statistics-dashboard'>Statistics Dashboard</Link>
+					</div>
+					<hr />
+				</div>
+			) : null}
+
 			<div>
 				<h2>In Progress Work Items</h2>
 				<ul>

@@ -4,6 +4,9 @@ import Login from './components/Login'
 import Register from './components/Register'
 import Dashboard from './components/Dashboard'
 import Home from './components/Home'
+import UserManagement from './components/UserManagement'
+import WorkItemsManagement from './components/WorkItemsManagement'
+import StatisticsDashboard from './components/StatisticsDashboard'
 import { AuthProvider, useAuth } from './context/AuthContext'
 
 const App = () => {
@@ -36,13 +39,52 @@ const App = () => {
 							</PrivateRoute>
 						}
 					/>
+					<Route
+						path='/statistics-dashboard'
+						element={
+							<AdminRoute>
+								<StatisticsDashboard />
+							</AdminRoute>
+						}
+					/>
+					<Route
+						path='/user-management'
+						element={
+							<AdminRoute>
+								<UserManagement />
+							</AdminRoute>
+						}
+					/>
+					<Route
+						path='/work-items-management'
+						element={
+							<AdminRoute>
+								<WorkItemsManagement />
+							</AdminRoute>
+						}
+					/>
 				</Routes>
 			</Router>
 		</AuthProvider>
 	)
 }
 
-// Private Route Component
+function AdminRoute({ children }) {
+	const { isAuthenticated, userRole } = useAuth()
+	const location = useLocation()
+	const isAdmin = userRole === 'admin' || userRole === 'manager'
+
+	return isAuthenticated ? (
+		isAdmin ? (
+			children
+		) : (
+			<Navigate to={location.state?.from || '/dashboard'} replace />
+		)
+	) : (
+		<Navigate to='/login' state={{ from: location }} replace />
+	)
+}
+
 function PrivateRoute({ children }) {
 	const { isAuthenticated } = useAuth()
 	const location = useLocation()
@@ -50,7 +92,6 @@ function PrivateRoute({ children }) {
 	return isAuthenticated ? children : <Navigate to='/login' state={{ from: location }} replace />
 }
 
-// Guest Route Component
 function GuestRoute({ children }) {
 	const { isAuthenticated } = useAuth()
 	const location = useLocation()
