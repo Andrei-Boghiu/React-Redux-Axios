@@ -31,7 +31,14 @@ function Login() {
 			<form onSubmit={handleLogin}>
 				<div>
 					<label>Email:</label>
-					<input type='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Enter your email' required />
+					<input
+						type='email'
+						value={email}
+						onChange={(e) => setEmail(e.target.value)}
+						placeholder='Enter your email'
+						required
+						autoComplete='true'
+					/>
 				</div>
 				<div>
 					<label>Password:</label>
@@ -41,6 +48,7 @@ function Login() {
 						onChange={(e) => setPassword(e.target.value)}
 						placeholder='Enter your password'
 						required
+						autoComplete='true'
 					/>
 				</div>
 				<button type='submit'>Log In</button>
