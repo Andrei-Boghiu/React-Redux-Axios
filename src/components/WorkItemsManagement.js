@@ -45,7 +45,7 @@ function WorkItemsManagement() {
 		console.log('Verified data:', data)
 
 		axios
-			.post('http://localhost:3001/api/work/bulk-upload', data, {
+			.post('http://localhost:3001/api/work/admin/add-items', data, {
 				headers: {
 					Authorization: `Bearer ${localStorage.getItem('token')}`,
 				},

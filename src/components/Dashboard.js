@@ -10,12 +10,14 @@ function Dashboard() {
 	useEffect(() => {
 		const fetchWorkItems = async () => {
 			try {
-				const response = await axios.get('http://localhost:3001/api/work/in-progress', {
+				const response = await axios.get('http://localhost:3001/api/work/get-user-items', {
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem('token')}`,
 					},
 				})
 				setWorkItems(response.data)
+				console.log('work items:')
+				console.log(response.data)
 			} catch (error) {
 				console.error('Error fetching work items', error)
 				alert('Error fetching lobby')
@@ -24,6 +26,20 @@ function Dashboard() {
 
 		fetchWorkItems()
 	}, [])
+
+	const handleGetWork = async () => {
+		try {
+			const response = await axios.put('http://localhost:3001/api/work/assign-new-item', {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('token')}`,
+				},
+			})
+			setWorkItems(response.data)
+		} catch (error) {
+			console.error('Error fetching work items', error)
+			alert('Error fetching lobby')
+		}
+	}
 
 	return (
 		<div>
@@ -55,6 +71,7 @@ function Dashboard() {
 					))}
 				</ul>
 			</div>
+			<button onClick={handleGetWork}>Get Work</button>
 			<button onClick={logout}>Logout</button>
 		</div>
 	)
