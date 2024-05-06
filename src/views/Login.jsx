@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { loginRequest } from '../api/authService'
 
 function Login() {
 	const [email, setEmail] = useState('')
@@ -12,15 +12,13 @@ function Login() {
 	const handleLogin = async (event) => {
 		event.preventDefault()
 		try {
-			const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/login`, {
-				email,
-				password,
-			})
+			const response = await loginRequest({ email, password })
 
 			const {
 				token,
 				user: { id, role },
 			} = response.data
+
 			if (token && role && id) {
 				login(token, role, email, id)
 				navigate('/dashboard')
@@ -35,7 +33,7 @@ function Login() {
 	}
 
 	return (
-		<div>
+		<div className='form-container'>
 			<h2>Login</h2>
 			<form onSubmit={handleLogin}>
 				<div>

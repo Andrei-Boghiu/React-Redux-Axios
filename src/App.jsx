@@ -8,62 +8,66 @@ import UserManagement from './views/UserManagement'
 import WorkItemsManagement from './views/WorkItemsManagement'
 import StatisticsDashboard from './views/StatisticsDashboard'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import Layout from './Layout'
+import './App.css'
 
 const App = () => {
 	return (
 		<AuthProvider>
 			<Router>
-				<Routes>
-					<Route path='/' element={<Home />} />
-					<Route
-						path='/login'
-						element={
-							<GuestRoute>
-								<Login />
-							</GuestRoute>
-						}
-					/>
-					<Route
-						path='/register'
-						element={
-							<GuestRoute>
-								<Register />
-							</GuestRoute>
-						}
-					/>
-					<Route
-						path='/dashboard'
-						element={
-							<PrivateRoute>
-								<Dashboard />
-							</PrivateRoute>
-						}
-					/>
-					<Route
-						path='/statistics-dashboard'
-						element={
-							<AdminRoute>
-								<StatisticsDashboard />
-							</AdminRoute>
-						}
-					/>
-					<Route
-						path='/user-management'
-						element={
-							<AdminRoute>
-								<UserManagement />
-							</AdminRoute>
-						}
-					/>
-					<Route
-						path='/work-items-management'
-						element={
-							<AdminRoute>
-								<WorkItemsManagement />
-							</AdminRoute>
-						}
-					/>
-				</Routes>
+				<Layout>
+					<Routes>
+						<Route path='/' element={<Home />} />
+						<Route
+							path='/login'
+							element={
+								<GuestRoute>
+									<Login />
+								</GuestRoute>
+							}
+						/>
+						<Route
+							path='/register'
+							element={
+								<GuestRoute>
+									<Register />
+								</GuestRoute>
+							}
+						/>
+						<Route
+							path='/dashboard'
+							element={
+								<PrivateRoute>
+									<Dashboard />
+								</PrivateRoute>
+							}
+						/>
+						<Route
+							path='/statistics-dashboard'
+							element={
+								<AdminRoute>
+									<StatisticsDashboard />
+								</AdminRoute>
+							}
+						/>
+						<Route
+							path='/user-management'
+							element={
+								<AdminRoute>
+									<UserManagement />
+								</AdminRoute>
+							}
+						/>
+						<Route
+							path='/work-items-management'
+							element={
+								<AdminRoute>
+									<WorkItemsManagement />
+								</AdminRoute>
+							}
+						/>
+					</Routes>
+				</Layout>
 			</Router>
 		</AuthProvider>
 	)

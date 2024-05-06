@@ -72,16 +72,31 @@ function WorkItemsManagement() {
 	}
 
 	return (
-		<div>
-			<h1>Work Items Management</h1>
+		<div className='flex-wrap'>
 			<div>
 				<h3>Upload Work Items</h3>
-				<input type='file' onChange={handleFileChange} />
-				<button onClick={handleFileUpload}>Upload Data</button>
-				<button onClick={downloadTemplate}>Download Template</button>
+				<input type='file' id='file-input' onChange={handleFileChange} />
+
+				<div className='flex-row-gap'>
+					<button onClick={handleFileUpload}>Upload Data</button>
+					<button onClick={downloadTemplate}>Download Template</button>
+				</div>
 
 				{/* Components or sections for adding, modifying, deleting work items */}
 				{/* Components or sections for viewing statistics about work items */}
+			</div>
+			<div>
+				<h3>Remove Work Items</h3>
+				<input type='file' id='file-input' disabled={true} />
+
+				<div className='flex-row-gap'>
+					<button className='disabled' disabled={true}>
+						Upload Data
+					</button>
+					<button className='disabled' disabled={true}>
+						Download Template
+					</button>
+				</div>
 			</div>
 		</div>
 	)

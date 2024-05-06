@@ -1,4 +1,5 @@
 import React from 'react'
+import './WorkItemsTable.css'
 
 const WorkItemsTable = ({ workItems, handleComplete, handleUnassigned }) => {
 	const getTableHeaders = () => {
@@ -21,8 +22,12 @@ const WorkItemsTable = ({ workItems, handleComplete, handleUnassigned }) => {
 							<td key={index}>{value}</td>
 						))}
 						<td>
-							<button onClick={() => handleComplete(item.id)}>Completed</button>
-							<button onClick={() => handleUnassigned(item.id)}>Unassign</button>
+							<button className='table-button' onClick={() => handleComplete(item.id)}>
+								Complete
+							</button>
+							<button className='table-button' onClick={() => handleUnassigned(item.id)}>
+								Unassign
+							</button>
 						</td>
 					</tr>
 				))}

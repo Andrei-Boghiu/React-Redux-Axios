@@ -1,56 +1,43 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'
+import { requestVerifyToken } from '../api/authService'
 
 const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
 	const [isAuthenticated, setAuthenticated] = useState(false)
+	const [isAdmin, setAdmin] = useState(false)
+
 	const [userRole, setUserRole] = useState('')
 	const [userEmail, setUserEmail] = useState('')
 	const [userId, setUserId] = useState(null)
 
 	const login = (token, role, email, id) => {
 		localStorage.setItem('token', token)
-		localStorage.setItem('role', role)
-		localStorage.setItem('email', email)
-		localStorage.setItem('id', id)
 
 		setAuthenticated(true)
 		setUserRole(role)
 		setUserEmail(email)
 		setUserId(id)
+		setAdmin(role === 'admin' || role === 'manager')
 	}
 
 	const logout = () => {
 		localStorage.removeItem('token')
-		localStorage.removeItem('role')
-		localStorage.removeItem('email')
-		localStorage.removeItem('id')
 
 		setAuthenticated(false)
 		setUserRole('')
 		setUserEmail('')
 		setUserId(null)
+		setAdmin(false)
 	}
 
 	const verifyToken = async (token) => {
 		try {
-			const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/verify-token`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			})
+			const response = await requestVerifyToken()
 
 			const { email, id, role } = response.data.user
 
-			localStorage.setItem('role', role)
-			localStorage.setItem('email', email)
-			localStorage.setItem('id', id)
-
-			setAuthenticated(true)
-			setUserRole(role)
-			setUserEmail(email)
-			setUserId(id)
+			login(token, role, email, id)
 		} catch (error) {
 			console.error('Token validation failed:', error)
 			logout()
@@ -65,7 +52,9 @@ export const AuthProvider = ({ children }) => {
 		}
 	})
 
-	return <AuthContext.Provider value={{ isAuthenticated, userRole, userEmail, userId, login, logout }}>{children}</AuthContext.Provider>
+	return (
+		<AuthContext.Provider value={{ isAuthenticated, userRole, userEmail, userId, login, logout, isAdmin }}>{children}</AuthContext.Provider>
+	)
 }
 
 export const useAuth = () => useContext(AuthContext)

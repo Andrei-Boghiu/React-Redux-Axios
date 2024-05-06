@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { requestRegister } from '../api/authService'
 
 function Register() {
 	const [email, setEmail] = useState('')
@@ -10,10 +10,8 @@ function Register() {
 	const handleRegister = async (event) => {
 		event.preventDefault()
 		try {
-			const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/register`, {
-				email,
-				password,
-			})
+			const response = await requestRegister({ email, password })
+
 			console.log('Registration successful:', response.data)
 			alert('Registration successful!')
 			navigate('/login')
@@ -24,7 +22,7 @@ function Register() {
 	}
 
 	return (
-		<div>
+		<div className='form-container'>
 			<h2>Register</h2>
 			<form onSubmit={handleRegister}>
 				<div>
