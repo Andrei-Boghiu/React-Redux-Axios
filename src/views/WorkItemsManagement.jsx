@@ -73,7 +73,7 @@ function WorkItemsManagement() {
 
 	return (
 		<div className='flex-wrap'>
-			<div>
+			<div className='ml-4'>
 				<h3>Upload Work Items</h3>
 				<input type='file' id='file-input' onChange={handleFileChange} />
 
@@ -85,7 +85,7 @@ function WorkItemsManagement() {
 				{/* Components or sections for adding, modifying, deleting work items */}
 				{/* Components or sections for viewing statistics about work items */}
 			</div>
-			<div>
+			<div className='ml-4'>
 				<h3>Update Work Items</h3>
 				<input type='file' id='file-input' disabled={true} />
 
@@ -98,7 +98,7 @@ function WorkItemsManagement() {
 					</button>
 				</div>
 			</div>
-			<div>
+			<div className='ml-4'>
 				<h3>Remove Work Items</h3>
 				<input type='file' id='file-input' disabled={true} />
 
@@ -111,8 +111,11 @@ function WorkItemsManagement() {
 					</button>
 				</div>
 			</div>
-			<div>
+			<div className='ml-4'>
 				<h3>Delete All Items from Team team_nr</h3>
+				<button className='disabled' disabled={true}>
+					Remove All
+				</button>
 			</div>
 		</div>
 	)
