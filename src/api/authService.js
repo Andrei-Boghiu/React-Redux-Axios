@@ -9,10 +9,9 @@ export const loginRequest = async ({ email, password }) => {
 	})
 }
 
-export const requestRegister = async ({ email, password }) => {
+export const requestRegister = async ({ email, firstName, lastName, password }) => {
 	return await axios.post(`${API_BASE_URL}/api/users/register`, {
-		email,
-		password,
+		email, firstName, lastName, password
 	})
 }
 

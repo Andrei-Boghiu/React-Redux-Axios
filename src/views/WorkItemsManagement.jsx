@@ -86,6 +86,19 @@ function WorkItemsManagement() {
 				{/* Components or sections for viewing statistics about work items */}
 			</div>
 			<div>
+				<h3>Update Work Items</h3>
+				<input type='file' id='file-input' disabled={true} />
+
+				<div className='flex-row-gap'>
+					<button className='disabled' disabled={true}>
+						Upload Data
+					</button>
+					<button className='disabled' disabled={true}>
+						Download Template
+					</button>
+				</div>
+			</div>
+			<div>
 				<h3>Remove Work Items</h3>
 				<input type='file' id='file-input' disabled={true} />
 
@@ -97,6 +110,9 @@ function WorkItemsManagement() {
 						Download Template
 					</button>
 				</div>
+			</div>
+			<div>
+				<h3>Delete All Items from Team team_nr</h3>
 			</div>
 		</div>
 	)

@@ -5,12 +5,14 @@ import { requestRegister } from '../api/authService'
 function Register() {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [firstName, setFirstName] = useState('')
+	const [lastName, setLastName] = useState('')
 	const navigate = useNavigate()
 
 	const handleRegister = async (event) => {
 		event.preventDefault()
 		try {
-			const response = await requestRegister({ email, password })
+			const response = await requestRegister({ email, firstName, lastName, password })
 
 			console.log('Registration successful:', response.data)
 			alert('Registration successful!')
@@ -31,7 +33,26 @@ function Register() {
 						type='email'
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
-						placeholder='Enter your email'
+						required
+						autoComplete='true'
+					/>
+				</div>
+				<div>
+					<label>First Name:</label>
+					<input
+						type='text'
+						value={firstName}
+						onChange={(e) => setFirstName(e.target.value)}
+						required
+						autoComplete='true'
+					/>
+				</div>
+				<div>
+					<label>Last Name:</label>
+					<input
+						type='text'
+						value={lastName}
+						onChange={(e) => setLastName(e.target.value)}
 						required
 						autoComplete='true'
 					/>
@@ -42,7 +63,6 @@ function Register() {
 						type='password'
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						placeholder='Enter your password'
 						required
 						autoComplete='true'
 					/>
