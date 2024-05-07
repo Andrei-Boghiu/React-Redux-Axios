@@ -18,10 +18,14 @@ export const NavBar = ({ title }) => {
 
 			<div className='nav-list'>
 				{isAuthenticated ? (
-					title === 'Home' ? (
+					title !== 'Dashboard' ? (
 						<div className='nav-content'>
+							<div className='nav-info'>
+								<p>{userEmail.split('@')[0]}</p>
+								{isAdmin && <p>({userRole})</p>}
+							</div>
 							<Link className='nav-button' to='/dashboard'>
-								Go to Dashboard
+								Dashboard
 							</Link>
 							<button className='nav-button' onClick={logout}>
 								Logout

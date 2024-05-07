@@ -5,20 +5,22 @@ const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
 	const [isAuthenticated, setAuthenticated] = useState(false)
-	const [isAdmin, setAdmin] = useState(false)
+	const [admin, setAdmin] = useState(false)
 
 	const [userRole, setUserRole] = useState('')
 	const [userEmail, setUserEmail] = useState('')
+	const [firstName, setFirstName] = useState('')
 	const [userId, setUserId] = useState(null)
 
-	const login = (token, role, email, id) => {
+	const login = (token, role, email, id, isAdmin, firstName) => {
 		localStorage.setItem('token', token)
 
 		setAuthenticated(true)
 		setUserRole(role)
 		setUserEmail(email)
 		setUserId(id)
-		setAdmin(role === 'admin' || role === 'manager')
+		setAdmin(isAdmin)
+		setFirstName(firstName)
 	}
 
 	const logout = () => {
@@ -27,6 +29,7 @@ export const AuthProvider = ({ children }) => {
 		setAuthenticated(false)
 		setUserRole('')
 		setUserEmail('')
+		setFirstName(false)
 		setUserId(null)
 		setAdmin(false)
 	}
@@ -35,9 +38,11 @@ export const AuthProvider = ({ children }) => {
 		try {
 			const response = await requestVerifyToken()
 
-			const { email, id, role } = response.data.user
+			const { email, id, role, isAdmin, firstName } = response.data.user
 
-			login(token, role, email, id)
+			console.log({ email, id, role, isAdmin, firstName })
+
+			login(token, role, email, id, isAdmin, firstName)
 		} catch (error) {
 			console.error('Token validation failed:', error)
 			logout()
@@ -53,7 +58,7 @@ export const AuthProvider = ({ children }) => {
 	})
 
 	return (
-		<AuthContext.Provider value={{ isAuthenticated, userRole, userEmail, userId, login, logout, isAdmin }}>{children}</AuthContext.Provider>
+		<AuthContext.Provider value={{ isAuthenticated, userRole, userEmail, userId, login, logout, admin, firstName }}>{children}</AuthContext.Provider>
 	)
 }
 

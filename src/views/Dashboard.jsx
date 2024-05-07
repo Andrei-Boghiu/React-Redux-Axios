@@ -5,8 +5,8 @@ import WorkItemsTable from '../components/shared/WorkItemsTable'
 import { fetchAssignNewItem, getUserWorkItems, updateItemComplete, updateItemUnassign } from '../api/workService'
 
 function Dashboard() {
-	const [workItems, setWorkItems] = useState([])
-	const { isAdmin } = useAuth()
+	const [workItems, setWorkItems] = useState([]);
+	const { admin } = useAuth();
 
 	useEffect(() => {
 		updateLobby()
@@ -28,7 +28,12 @@ function Dashboard() {
 			setWorkItems(response.data)
 		} catch (error) {
 			console.error('Error fetching work items', error)
-			alert('Error fetching lobby')
+			const errMessage = error.response.data
+			if (errMessage) {
+				alert(errMessage)
+			} else {
+				alert('Error fetching lobby')
+			}
 		}
 	}
 
@@ -54,7 +59,7 @@ function Dashboard() {
 
 	return (
 		<div>
-			{isAdmin ? (
+			{admin ? (
 				<div>
 					<h2>Admin Actions</h2>
 					<div>
@@ -75,7 +80,10 @@ function Dashboard() {
 			<div>
 				<h2>In Progress Work Items</h2>
 
-				<WorkItemsTable workItems={workItems} handleComplete={handleCompleteItem} handleUnassigned={handleUnassigned} />
+				{workItems.length
+					? <WorkItemsTable workItems={workItems} handleComplete={handleCompleteItem} handleUnassigned={handleUnassigned} />
+					: <div>Lobby is empty...</div>}
+
 			</div>
 			<button onClick={handleGetWork}>Get Work</button>
 		</div>

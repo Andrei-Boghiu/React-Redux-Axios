@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import * as XLSX from 'xlsx'
-import axios from 'axios'
+import { insertWorkItems } from '../api/workService'
 
 function WorkItemsManagement() {
 	const [file, setFile] = useState(null)
-	const requiredHeaders = ['title', 'description']
+	const requiredHeaders = ['title', 'description', 'team_id'];
+	const templateHeaders = ['aux_id', 'title', 'description', 'team_id'];
 
 	const handleFileChange = (event) => {
 		setFile(event.target.files[0])
@@ -27,42 +28,41 @@ function WorkItemsManagement() {
 		reader.readAsArrayBuffer(file)
 	}
 
-	const verifyAndUploadData = (data) => {
-		if (data.length === 0) {
-			alert('The file is empty.')
-			return
+	const verifyAndUploadData = async (data) => {
+		try {
+			if (data.length === 0) {
+				alert('The file is empty.')
+				return
+			}
+
+			const dataHeaders = Object.keys(data[0])
+			const areRequiredHeadersPresent = requiredHeaders.every((header) => dataHeaders.includes(header))
+
+			if (!areRequiredHeadersPresent) {
+				alert('The file does not contain the necessary headers. Please check the file and try again.')
+				return
+			}
+
+			await insertWorkItems(data)
+			alert('Data uploaded successfully!')
+
+		} catch (error) {
+			console.error('Failed to upload data:')
+			console.error(error)
+			const errMessage = error?.response?.data?.message
+			const errDetails = error?.response?.data?.error?.detail
+			if (errMessage && errDetails) {
+				alert(`${errMessage}: ${errDetails}`)
+			} else {
+				alert('Error uploading data: unknown error')
+			}
 		}
-		// Check if the necessary headers are present
-		const dataHeaders = Object.keys(data[0])
-		const areRequiredHeadersPresent = requiredHeaders.every((header) => dataHeaders.includes(header))
-
-		if (!areRequiredHeadersPresent) {
-			alert('The file does not contain the necessary headers. Please check the file and try again.')
-			return
-		}
-
-		// Data is verified, log it and proceed with upload
-		console.log('Verified data:', data)
-
-		axios
-			.post('http://localhost:3001/api/work/admin/add-items', data, {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('token')}`,
-				},
-			})
-			.then((response) => {
-				alert('Data uploaded successfully!')
-			})
-			.catch((error) => {
-				console.error('Failed to upload data:', error)
-				alert('Error uploading data.')
-			})
 	}
 
 	const downloadTemplate = () => {
 		const wb = XLSX.utils.book_new()
 		const ws_name = 'Template'
-		const data = [requiredHeaders]
+		const data = [templateHeaders]
 
 		const ws = XLSX.utils.aoa_to_sheet(data)
 

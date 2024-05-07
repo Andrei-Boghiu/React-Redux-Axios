@@ -16,11 +16,11 @@ function Login() {
 
 			const {
 				token,
-				user: { id, role },
+				user: { id, role, isAdmin, firstName },
 			} = response.data
 
 			if (token && role && id) {
-				login(token, role, email, id)
+				login(token, role, email, id, isAdmin, firstName)
 				navigate('/dashboard')
 			} else {
 				console.error('Login failed: Incomplete data received')

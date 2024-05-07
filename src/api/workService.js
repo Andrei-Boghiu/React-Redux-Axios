@@ -17,3 +17,7 @@ export const updateItemComplete = async (workItemId) => {
 export const updateItemUnassign = async (workItemId) => {
 	return await axios.patch(`${API_BASE_URL}/api/work/set-unassigned`, { workItemId }, { headers: getHeaders() })
 }
+
+export const insertWorkItems = async (data) => {
+	return await axios.post(`${API_BASE_URL}/api/work/admin/add-items`, data, { headers: getHeaders() })
+}
