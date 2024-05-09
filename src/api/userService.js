@@ -1,20 +1,20 @@
 import axios from "axios"
-import { getHeaders, API_BASE_URL } from "./config"
+import { API_BASE_URL } from "./config"
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (headers) => {
 	return await axios.get(`${API_BASE_URL}/api/users/get-all-users`, {
-		headers: getHeaders(),
+		headers: headers,
 	})
 }
 
-export const getUserProfile = async () => {
+export const getUserProfile = async (headers) => {
 	return await axios.get(`${API_BASE_URL}/api/users/get-user-profile`, {
-		headers: getHeaders(),
+		headers: headers,
 	})
 }
 
-export const sendRequestTeamAccess = async (teamId) => {
-	return await axios.patch(`${API_BASE_URL}/api/users/request-team-access`, { teamId }, { headers: getHeaders() })
+export const sendRequestTeamAccess = async (headers, teamId) => {
+	return await axios.patch(`${API_BASE_URL}/api/users/request-team-access`, { teamId }, { headers: headers })
 }
 
 export const updateUserRole = async (userId) => {

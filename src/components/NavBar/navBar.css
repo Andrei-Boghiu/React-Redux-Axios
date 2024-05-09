@@ -38,6 +38,9 @@
 }
 
 .nav-routes {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
 	margin: 10px 0;
 }
 
@@ -47,7 +50,7 @@
 	align-items: center;
 	justify-content: flex-end;
 	width: 30%;
-	margin:  10px 0;
+	margin: 10px 0;
 }
 
 .nav-content {
@@ -55,7 +58,7 @@
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-	gap: 20px;
+	gap: 10px;
 }
 
 .nav-info {
@@ -67,4 +70,24 @@
 
 .nav-info p {
 	margin: 0;
+}
+
+select.nav-team-selector {
+	color: #ffffff;
+	background-color: transparent;
+	text-align: center;
+	padding: 5px 8px;
+	margin: 0 5px;
+	border: 1px solid #ffffff;
+	border-radius: 4px;
+	border-radius: 4px;
+	font-size: 14px;
+	text-decoration: none;
+	display: inline-block;
+	cursor: pointer;
+	width: fit-content;
+}
+
+option.nav-team-option {
+	background-color: #0a152f;
 }

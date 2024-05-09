@@ -4,22 +4,21 @@ import brand from '../brand.json'
 import { Link } from 'react-router-dom'
 
 function Home() {
-	const { isAuthenticated, firstName } = useAuth();
-	const random = Math.floor(Math.random() * brand.welcome_back_message.length)
-
+	// const random = Math.floor(Math.random() * brand.welcome_back_message.length);
+	const day = new Date().getDay();
+	const randomFunnyMessage = brand.welcome_back_message[day];
+	const { isAuthenticated, firstName, userRoleAuthority } = useAuth();
 
 	return (
 		<div>
 			{isAuthenticated ?
 				<>
-					<h1>Welcome, {firstName}</h1>
-					<p>{brand.welcome_back_message[random]}</p>
-
+					<h1 className='text-center'>Welcome, {firstName}</h1>
+					<p className='text-center'>{randomFunnyMessage ? randomFunnyMessage : 'Let\'s dive back into productivity'}</p>
 				</>
 				: <>
-					<h1>Welcome to {brand.title}</h1>
-					<p>{brand.subtitle}</p>
-
+					<h1 className='text-center'>Welcome to {brand.title}</h1>
+					<p className='text-center'>{brand.subtitle}</p>
 				</>
 			}
 
@@ -61,9 +60,11 @@ function Home() {
 					<p>Create your own team space, invite members, and start managing your work items.</p>
 
 					{isAuthenticated ?
-						<Link className='btn-primary' to='/create-team' >
-							Create a Team
-						</Link>
+						userRoleAuthority <= 3 ?
+							<Link className='btn-primary' to='/create-team' >
+								Create a Team
+							</Link>
+							: <Link className='btn-link' to='/request-access'>Request Access to Create a Team</Link>
 						: <span className='btn-primary disabled'>Login to unlock</span>
 					}
 				</div>

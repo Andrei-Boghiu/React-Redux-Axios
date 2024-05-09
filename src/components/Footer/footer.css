@@ -1,0 +1,14 @@
+.footer {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    /* background-color: #0a152f; */
+    color: #0a152f;
+    margin: auto;
+    padding: 0px 15px;
+}
+
+.copyright {
+    text-align: center;
+    font-size: small;
+    font-style: italic;
+    font-weight: 500;
+}

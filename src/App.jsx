@@ -5,7 +5,8 @@ import RequestTeamAccess from './views/RequestTeamAccess'
 import CreateTeam from './views/CreateTeam'
 import Dashboard from './views/Dashboard'
 import Home from './views/Home'
-import UserManagement from './views/UserManagement'
+import UserManagement from './views/UsersManagement'
+import TeamManagement from './views/TeamManagement'
 import WorkItemsManagement from './views/WorkItemsManagement'
 import StatisticsDashboard from './views/StatisticsDashboard'
 import NotFound from './views/NotFound'
@@ -15,6 +16,56 @@ import './App.css'
 import './assets/buttons.css'
 import './assets/helpers.css'
 import Register from './views/Register'
+
+function RoleRouteModel({ children, authorityLevel }) {
+	const { isAuthenticated, userRoleAuthority } = useAuth()
+	const location = useLocation()
+	const isAuthorized = userRoleAuthority <= authorityLevel
+
+	return isAuthenticated ? (
+		isAuthorized ? (
+			children
+		) : (
+			<Navigate to={location.state?.from || '/dashboard'} replace />
+		)
+	) : (
+		<Navigate to='/login' state={{ from: location }} replace />
+	)
+}
+
+function TeamMemberRoute({ children }) {
+	return RoleRouteModel({ children, authorityLevel: 5 })
+}
+
+function AllocatorRoute({ children }) {
+	return RoleRouteModel({ children, authorityLevel: 4 })
+}
+
+function TeamAdminRoute({ children }) {
+	return RoleRouteModel({ children, authorityLevel: 3 })
+}
+
+// function ManagerRoute({ children }) {
+// 	return RoleRouteModel({ children, authorityLevel: 2 })
+// }
+
+function AdminRoute({ children }) {
+	return RoleRouteModel({ children, authorityLevel: 1 })
+}
+
+function PrivateRoute({ children }) {
+	const { isAuthenticated } = useAuth()
+	const location = useLocation()
+
+	return isAuthenticated ? children : <Navigate to='/login' state={{ from: location }} replace />
+}
+
+function GuestRoute({ children }) {
+	const { isAuthenticated } = useAuth()
+	const location = useLocation()
+
+	return isAuthenticated ? <Navigate to={location.state?.from || '/dashboard'} replace /> : children
+}
 
 const App = () => {
 	return (
@@ -54,29 +105,37 @@ const App = () => {
 						<Route
 							path='/create-team'
 							element={
-								<PrivateRoute>
+								<TeamAdminRoute>
 									<CreateTeam />
-								</PrivateRoute>
+								</TeamAdminRoute>
 							}
 						/>
 						<Route
 							path='/dashboard'
 							element={
-								<PrivateRoute>
+								<TeamMemberRoute>
 									<Dashboard />
-								</PrivateRoute>
+								</TeamMemberRoute>
 							}
 						/>
 						<Route
 							path='/statistics-dashboard'
 							element={
-								<AdminRoute>
+								<AllocatorRoute>
 									<StatisticsDashboard />
-								</AdminRoute>
+								</AllocatorRoute>
 							}
 						/>
 						<Route
-							path='/user-management'
+							path='/team-management'
+							element={
+								<TeamAdminRoute>
+									<TeamManagement />
+								</TeamAdminRoute>
+							}
+						/>
+						<Route
+							path='/users-management'
 							element={
 								<AdminRoute>
 									<UserManagement />
@@ -86,9 +145,9 @@ const App = () => {
 						<Route
 							path='/work-items-management'
 							element={
-								<AdminRoute>
+								<AllocatorRoute>
 									<WorkItemsManagement />
-								</AdminRoute>
+								</AllocatorRoute>
 							}
 						/>
 						<Route path='*'
@@ -101,36 +160,6 @@ const App = () => {
 			</Router>
 		</AuthProvider>
 	)
-}
-
-function AdminRoute({ children }) {
-	const { isAuthenticated, userRole } = useAuth()
-	const location = useLocation()
-	const isAdmin = userRole === 'admin' || userRole === 'manager'
-
-	return isAuthenticated ? (
-		isAdmin ? (
-			children
-		) : (
-			<Navigate to={location.state?.from || '/dashboard'} replace />
-		)
-	) : (
-		<Navigate to='/login' state={{ from: location }} replace />
-	)
-}
-
-function PrivateRoute({ children }) {
-	const { isAuthenticated } = useAuth()
-	const location = useLocation()
-
-	return isAuthenticated ? children : <Navigate to='/login' state={{ from: location }} replace />
-}
-
-function GuestRoute({ children }) {
-	const { isAuthenticated } = useAuth()
-	const location = useLocation()
-
-	return isAuthenticated ? <Navigate to={location.state?.from || '/dashboard'} replace /> : children
 }
 
 export default App

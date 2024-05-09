@@ -1,4 +1,10 @@
 /* Global Styles */
+#root {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
 body {
 	font-family: 'Helvetica Neue', Arial, sans-serif;
 	background-color: #f4f4f4;
@@ -6,6 +12,7 @@ body {
 	margin: 0;
 	padding: 0;
 	line-height: 1.6;
+	height: 100%;
 }
 
 a {
@@ -17,6 +24,7 @@ a {
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 20px;
+	flex: 1;
 }
 
 /* Text Elements */
@@ -145,4 +153,3 @@ input[type='file'] {
 	border-radius: 8px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-

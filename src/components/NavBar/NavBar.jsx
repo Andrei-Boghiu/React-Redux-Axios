@@ -1,12 +1,35 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
 import './navBar.css'
 import brand from '../../brand.json'
 import NavButton from './NavButton'
 
-export const NavBar = ({ title }) => {
-	const { logout, userRole, userEmail, isAuthenticated, admin } = useAuth()
+export const NavBar = () => {
+	const { logout, username, isAuthenticated, teams, changeTeam, userRoleName, userRoleAuthority } = useAuth();
+	const [selectedTeam, setSelectedTeam] = useState(null);
+
+	useEffect(() => {
+		console.log('Checking last team used...')
+		const lastTeamId = window.localStorage.getItem('lastSelectedTeamId');
+		if (lastTeamId) {
+			const selectedTeamData = teams.find((team) => team.team_id === Number(lastTeamId));
+			if (selectedTeamData) {
+				console.log('Last team found...')
+				console.log(selectedTeam)
+				setSelectedTeam(selectedTeamData);
+				changeTeam(lastTeamId);
+			}
+		}
+	}, [teams, changeTeam, selectedTeam]);
+
+	const handleTeamChange = (teamId) => {
+		const selectedTeamData = teams.find((team) => team.team_id === Number(teamId));
+		if (selectedTeamData) {
+			setSelectedTeam(selectedTeamData);
+			changeTeam(teamId);
+		}
+	};
 
 	return (
 		<div className='navigation'>
@@ -20,23 +43,36 @@ export const NavBar = ({ title }) => {
 					</NavButton>
 
 					{
-						isAuthenticated &&
+						userRoleAuthority >= 0 &&
 						<>
 							<NavButton to='/dashboard'>
 								Dashboard
 							</NavButton>
 							{
-								admin &&
 								<>
-									<NavButton to='/user-management'>
-										User Management
-									</NavButton>
-									<NavButton to='/work-items-management'>
-										Work Items Management
-									</NavButton>
-									<NavButton to='/statistics-dashboard'>
-										Statistics Dashboard
-									</NavButton>
+									{
+										userRoleAuthority <= 3 && <NavButton to='/team-management'>
+											Team Management
+										</NavButton>
+									}
+
+									{
+										userRoleAuthority <= 1 && <NavButton to='/users-management'>
+											Users Management
+										</NavButton>
+									}
+
+									{
+										userRoleAuthority <= 4 && <>
+											<NavButton to='/work-items-management'>
+												Work Items Management
+											</NavButton>
+
+											<NavButton to='/statistics-dashboard'>
+												Statistics Dashboard
+											</NavButton>
+										</>
+									}
 								</>
 							}
 						</>
@@ -48,9 +84,31 @@ export const NavBar = ({ title }) => {
 				{isAuthenticated ? (
 					<div className='nav-content'>
 						<div className='nav-info'>
-							<p>{userEmail.split('@')[0]}</p>
-							{admin && <p>({userRole})</p>}
+							<p>{username}</p>
+							{<p>{selectedTeam && `(${userRoleName})`}</p>}
 						</div>
+						{
+							teams.length > 0
+								? <>
+									{teams.length === 1
+										? <span className='nav-button btn-outline'>{teams[0].team_name}</span>
+										: <select
+											className='nav-team-selector'
+											onChange={e => handleTeamChange(e.target.value)}
+											value={selectedTeam ? selectedTeam.team_id : ''}
+										>
+											{teams.map(team =>
+												<option key={team.team_id}
+													value={team.team_id}
+													className='nav-team-option'
+												>
+													{team.team_name}
+												</option>
+											)}
+										</select>}
+								</>
+								: <p>Looks like your not part of a team yet..</p>
+						}
 						<Link className='nav-button btn-outline' onClick={logout}>
 							Logout
 						</Link>
