@@ -6,6 +6,7 @@ import { loginRequest } from '../api/authService'
 function Login() {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [isLoading, setLoading] = useState(false)
 	const { login } = useAuth()
 	const navigate = useNavigate()
 
@@ -14,8 +15,10 @@ function Login() {
 	}
 
 	const handleLogin = async (event) => {
-		event.preventDefault()
 		try {
+			setLoading(true)
+			event.preventDefault()
+
 			const response = await loginRequest({ email, password })
 
 			const {
@@ -33,6 +36,8 @@ function Login() {
 		} catch (error) {
 			console.error('Login failed:', error.response ? error.response.data : 'Server error')
 			alert('Failed to log in, please check your credentials and try again.')
+		} finally {
+			setLoading(false);
 		}
 	}
 
@@ -44,6 +49,7 @@ function Login() {
 					<label>Email:</label>
 					<input
 						type='email'
+						name='email'
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 						required
@@ -54,18 +60,20 @@ function Login() {
 					<label>Password:</label>
 					<input
 						type='password'
+						name='password'
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 						required
 						autoComplete='true'
 					/>
 				</div>
-				<button type='submit'>Log In</button>
+				<button type='submit' disabled={isLoading} className={`${isLoading && 'disabled'}`}>
+					{isLoading ? 'Loading...' : 'Submit'}
+				</button>
 				<div className='flex-row-evenly'>
 					<Link className='btn-link-small' onClick={handleForgotPassword}>Forgot your password?</Link>
 					<Link className='btn-link-small' to='/register'>Don't have an account?</Link>
 				</div>
-
 
 			</form>
 		</div>

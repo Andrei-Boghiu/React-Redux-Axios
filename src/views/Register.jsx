@@ -8,6 +8,8 @@ function Register() {
     const [passwordValid, setPasswordValid] = useState(null)
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [isLoading, setLoading] = useState(false)
+
     const navigate = useNavigate();
 
     const validatePassword = (password) => {
@@ -17,8 +19,10 @@ function Register() {
     }
 
     const handleRegister = async (event) => {
-        event.preventDefault()
         try {
+            setLoading(true)
+            event.preventDefault()
+
             if (!passwordValid) {
                 alert('Your password doesn\'t meet the requirements');
                 return
@@ -42,6 +46,8 @@ function Register() {
             } else {
                 alert('Failed to register, please check your inputs and try again.');
             }
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -103,7 +109,9 @@ function Register() {
                         </ul>
                     </div>
                 </div>
-                <button type='submit'>Register</button>
+                <button type='submit' disabled={isLoading} className={`${isLoading && 'disabled'}`}>
+                    {isLoading ? 'Loading...' : 'Submit'}
+                </button>
                 <Link className='btn-link-small' to='/login'>Already have an account?</Link>
 
             </form>
