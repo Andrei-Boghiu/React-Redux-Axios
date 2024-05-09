@@ -6,6 +6,7 @@ import { loginRequest } from '../api/authService'
 function Login() {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [capsLockOn, setCapsLockOn] = useState(false)
 	const [isLoading, setLoading] = useState(false)
 	const { login } = useAuth()
 	const navigate = useNavigate()
@@ -14,28 +15,44 @@ function Login() {
 		alert('Just stay calm and try to remember your password.')
 	}
 
+	const handleKeyChange = (event) => {
+		console.log("checking key press...")
+		if (event.getModifierState('CapsLock')) {
+			setCapsLockOn(true)
+		} else {
+			setCapsLockOn(false)
+		}
+	}
+
 	const handleLogin = async (event) => {
 		try {
 			setLoading(true)
 			event.preventDefault()
 
 			const response = await loginRequest({ email, password })
+			console.log(response)
 
 			const {
 				token,
-				user: { id, role, isAdmin, firstName },
+				user: { id, username, email: resEmail, firstName, teams },
 			} = response.data
 
-			if (token && role && id) {
-				login(token, role, email, id, isAdmin, firstName)
+			if (token && id && username && email && firstName) {
+				login({ token, id, username, email: resEmail, firstName, teams })
 				navigate('/dashboard')
 			} else {
 				console.error('Login failed: Incomplete data received')
 				alert('Failed to log in, please try again.')
 			}
 		} catch (error) {
-			console.error('Login failed:', error.response ? error.response.data : 'Server error')
-			alert('Failed to log in, please check your credentials and try again.')
+			const errMessage = error?.response?.data?.message
+			console.error('Login failed:', error.response ? error.response.data : 'Server error');
+
+			if (errMessage) {
+				alert(`Error: ${errMessage}`)
+			} else {
+				alert('Failed to log in, please check your credentials and try again.');
+			}
 		} finally {
 			setLoading(false);
 		}
@@ -62,10 +79,13 @@ function Login() {
 						type='password'
 						name='password'
 						value={password}
+						onKeyUp={handleKeyChange}
+						onKeyDown={handleKeyChange}
 						onChange={(e) => setPassword(e.target.value)}
 						required
 						autoComplete='true'
 					/>
+					{capsLockOn && <p className='small red italic'>Caps Lock is on.</p>}
 				</div>
 				<button type='submit' disabled={isLoading} className={`${isLoading && 'disabled'}`}>
 					{isLoading ? 'Loading...' : 'Submit'}
@@ -74,7 +94,6 @@ function Login() {
 					<Link className='btn-link-small' onClick={handleForgotPassword}>Forgot your password?</Link>
 					<Link className='btn-link-small' to='/register'>Don't have an account?</Link>
 				</div>
-
 			</form>
 		</div>
 	)
