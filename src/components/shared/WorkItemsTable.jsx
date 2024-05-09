@@ -1,5 +1,5 @@
 import React from 'react'
-import './WorkItemsTable.css'
+import '../../assets/tables.css'
 
 const WorkItemsTable = ({ workItems, handleComplete, handleUnassigned }) => {
 	const getTableHeaders = () => {

@@ -1,15 +1,20 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Login from './views/Login'
-import Register from './views/Register'
+import RequestTeamAccess from './views/RequestTeamAccess'
+import CreateTeam from './views/CreateTeam'
 import Dashboard from './views/Dashboard'
 import Home from './views/Home'
 import UserManagement from './views/UserManagement'
 import WorkItemsManagement from './views/WorkItemsManagement'
 import StatisticsDashboard from './views/StatisticsDashboard'
+import NotFound from './views/NotFound'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Layout from './Layout'
 import './App.css'
+import './assets/buttons.css'
+import './assets/helpers.css'
+import Register from './views/Register'
 
 const App = () => {
 	return (
@@ -17,7 +22,11 @@ const App = () => {
 			<Router>
 				<Layout>
 					<Routes>
-						<Route path='/' element={<Home />} />
+						<Route path='/'
+							element={
+								<Home />
+							}
+						/>
 						<Route
 							path='/login'
 							element={
@@ -32,6 +41,22 @@ const App = () => {
 								<GuestRoute>
 									<Register />
 								</GuestRoute>
+							}
+						/>
+						<Route
+							path='/request-team-access'
+							element={
+								<PrivateRoute>
+									<RequestTeamAccess />
+								</PrivateRoute>
+							}
+						/>
+						<Route
+							path='/create-team'
+							element={
+								<PrivateRoute>
+									<CreateTeam />
+								</PrivateRoute>
 							}
 						/>
 						<Route
@@ -64,6 +89,11 @@ const App = () => {
 								<AdminRoute>
 									<WorkItemsManagement />
 								</AdminRoute>
+							}
+						/>
+						<Route path='*'
+							element={
+								<NotFound />
 							}
 						/>
 					</Routes>

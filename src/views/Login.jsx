@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { loginRequest } from '../api/authService'
 
@@ -8,6 +8,10 @@ function Login() {
 	const [password, setPassword] = useState('')
 	const { login } = useAuth()
 	const navigate = useNavigate()
+
+	const handleForgotPassword = () => {
+		alert('Just stay calm and try to remember your password.')
+	}
 
 	const handleLogin = async (event) => {
 		event.preventDefault()
@@ -42,7 +46,6 @@ function Login() {
 						type='email'
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
-						placeholder='Enter your email'
 						required
 						autoComplete='true'
 					/>
@@ -53,12 +56,17 @@ function Login() {
 						type='password'
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
-						placeholder='Enter your password'
 						required
 						autoComplete='true'
 					/>
 				</div>
 				<button type='submit'>Log In</button>
+				<div className='flex-row-evenly'>
+					<Link className='btn-link-small' onClick={handleForgotPassword}>Forgot your password?</Link>
+					<Link className='btn-link-small' to='/register'>Don't have an account?</Link>
+				</div>
+
+
 			</form>
 		</div>
 	)

@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
 			const { email, id, role, isAdmin, firstName } = response.data.user
 
-			console.log({ email, id, role, isAdmin, firstName })
+			// console.log({ email, id, role, isAdmin, firstName })
 
 			login(token, role, email, id, isAdmin, firstName)
 		} catch (error) {

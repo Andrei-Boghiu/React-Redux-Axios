@@ -1,0 +1,14 @@
+{
+    "title": "Assignify",
+    "subtitle": "A versatile work allocation tool design to streamline the allocation process.",
+    "description": "A versatile work allocation tool featuring an allocation engine suitable for integration with other tools in order to strictly handle the work allocation matters.",
+    "welcome_back_message": [
+        "Let's dive back into productivity",
+        "Ready to tackle today's tasks? Your dashboard awaits",
+        "Let's pick up the pace on those tasks",
+        "All set for another day of great achievements",
+        "'I am Beyoncé' -Michael Scott",
+        "'Sometimes I'll start a sentence and I don't even know where it's going. I just hope I find along the way...' -Michael Scott",
+        "'I understand nothing' -Michael Scott"
+    ]
+}

@@ -1,0 +1,80 @@
+button,
+.btn-primary {
+    background-color: #0a152f;
+    color: #ffffff;
+    border: 2px solid #0a152f;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+button:hover,
+.btn-primary:hover {
+    background-color: #13409b;
+    border-color: #13409b;
+}
+
+button:active,
+.btn-primary:active {
+    background-color: #164cb8;
+    border-color: #164cb8;
+}
+
+.btn-link {
+    color: #0a152f;
+    margin: 10px;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+.btn-link-small {
+    color: #0a152f;
+    margin: 10px;
+    font-size: small;
+}
+
+.btn-link-small:hover {
+    text-decoration: underline;
+}
+
+.nav-button {
+    background-color: transparent;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin: 0 5px;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-button:hover {
+    background-color: #ffffff;
+    color: #0a152f;
+    text-decoration: none;
+}
+
+.nav-button:active {
+    background-color: #e1e1e1;
+    color: #0a152f;
+    text-decoration: none;
+}
+
+.btn-highlight {
+    background-color: #ffffff;
+    color: #0a152f;
+    text-decoration: none;
+    cursor: default;
+}
+
+.btn-outline {
+    border: 1px solid #ffffff;
+}

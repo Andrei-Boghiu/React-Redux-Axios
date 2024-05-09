@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 import WorkItemsTable from '../components/shared/WorkItemsTable'
 import { fetchAssignNewItem, getUserWorkItems, updateItemComplete, updateItemUnassign } from '../api/workService'
 
 function Dashboard() {
 	const [workItems, setWorkItems] = useState([]);
-	const { admin } = useAuth();
 
 	useEffect(() => {
 		updateLobby()
@@ -26,6 +23,8 @@ function Dashboard() {
 		try {
 			const response = await fetchAssignNewItem()
 			setWorkItems(response.data)
+			console.log(response.data)
+			// updateLobby()
 		} catch (error) {
 			console.error('Error fetching work items', error)
 			const errMessage = error.response.data
@@ -59,24 +58,6 @@ function Dashboard() {
 
 	return (
 		<div>
-			{admin ? (
-				<div>
-					<h2>Admin Actions</h2>
-					<div>
-						<Link className='admin-button' to='/user-management'>
-							User Management
-						</Link>
-						<Link className='admin-button' to='/work-items-management'>
-							Work Items Management
-						</Link>
-						<Link className='admin-button' to='/statistics-dashboard'>
-							Statistics Dashboard
-						</Link>
-					</div>
-					<hr />
-				</div>
-			) : null}
-
 			<div>
 				<h2>In Progress Work Items</h2>
 

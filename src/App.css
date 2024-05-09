@@ -13,12 +13,6 @@ a {
 	text-decoration: none;
 }
 
-a:hover,
-a:focus {
-	text-decoration: underline;
-	color: #357abd;
-}
-
 .main-content {
 	max-width: 1200px;
 	margin: 0 auto;
@@ -57,43 +51,7 @@ li {
 }
 
 /* Tables */
-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-bottom: 20px;
-	border-radius: 8px;
-	overflow: hidden;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	background-color: #ffffff;
-}
 
-th,
-td {
-	padding: 12px 15px;
-	text-align: left;
-	border-bottom: 1px solid #e1e1e1;
-}
-
-th {
-	background-color: #0a152f;
-	color: #ffffff;
-	font-size: 16px;
-	letter-spacing: 0.5px;
-}
-
-td {
-	color: #333;
-	font-size: 14px;
-	text-align: center;
-}
-
-tr:last-child td {
-	border-bottom: none;
-}
-
-tr:hover {
-	background-color: #f4f4f4;
-}
 
 /* Forms */
 .form-container {
@@ -122,29 +80,7 @@ select {
 	border-radius: 4px;
 }
 
-input[type='submit'],
-button {
-	background-color: #0a152f;
-	color: #ffffff;
-	border: 2px solid #0a152f;
-	padding: 8px 16px;
-	font-size: 14px;
-	border-radius: 4px;
-	cursor: pointer;
-	transition: background-color 0.2s, color 0.2s;
-}
 
-input[type='submit']:hover,
-button:hover {
-	background-color: #13409b;
-	border-color: #13409b;
-}
-
-input[type='submit']:active,
-button:active {
-	background-color: #164cb8;
-	border-color: #164cb8;
-}
 
 input[type='file'] {
 	margin: 10px;
@@ -176,27 +112,24 @@ input[type='file'] {
 	color: #ffffff;
 }
 
-/* Helper Classes */
-.text-center {
-	text-align: center;
-}
-
-.text-right {
-	text-align: right;
-}
-
-.bold {
-	font-weight: bold;
-}
-
-.italic {
-	font-style: italic;
-}
-
 .flex-row-gap {
 	display: flex;
 	align-items: center;
 	gap: 10px;
+}
+
+.flex-row-between {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flex-row-evenly {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
 }
 
 .flex-wrap {
@@ -205,18 +138,13 @@ input[type='file'] {
 	justify-content: space-evenly;
 }
 
-.disabled {
-	background-color: gray !important;
-	color: #fff !important;
-	border: none;
-}
 
-.ml-4 {
+.action-box {
 	margin: 30px;
+	width: 400px;
+	background-color: #ffffff;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Accessibility */
-:focus {
-	outline: 2px dashed #4a90e2;
-	outline-offset: 2px;
-}

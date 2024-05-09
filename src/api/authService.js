@@ -20,3 +20,4 @@ export const requestVerifyToken = async () => {
 		headers: getHeaders(),
 	})
 }
+

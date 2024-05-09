@@ -2,66 +2,67 @@ import React from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
 import './navBar.css'
-import homeIcon from '../../assets/icon-home.svg'
+import brand from '../../brand.json'
+import NavButton from './NavButton'
 
 export const NavBar = ({ title }) => {
-	const { logout, userRole, userEmail, isAuthenticated, isAdmin } = useAuth()
+	const { logout, userRole, userEmail, isAuthenticated, admin } = useAuth()
 
 	return (
 		<div className='navigation'>
 			<div className='nav-header'>
-				<Link to='/' className='nav-icon-link'>
-					<img src={homeIcon} alt='Home Icon' className='nav-icon' />
-				</Link>
-				<h2>{title}</h2>
+				<div className='nav-title'>
+					<h2>{brand.title}</h2>
+				</div>
+				<div className='nav-routes'>
+					<NavButton to='/'>
+						Home
+					</NavButton>
+
+					{
+						isAuthenticated &&
+						<>
+							<NavButton to='/dashboard'>
+								Dashboard
+							</NavButton>
+							{
+								admin &&
+								<>
+									<NavButton to='/user-management'>
+										User Management
+									</NavButton>
+									<NavButton to='/work-items-management'>
+										Work Items Management
+									</NavButton>
+									<NavButton to='/statistics-dashboard'>
+										Statistics Dashboard
+									</NavButton>
+								</>
+							}
+						</>
+					}
+				</div>
 			</div>
 
-			<div className='nav-list'>
+			<div className='nav-account-actions'>
 				{isAuthenticated ? (
-					title !== 'Dashboard' ? (
-						<div className='nav-content'>
-							<div className='nav-info'>
-								<p>{userEmail.split('@')[0]}</p>
-								{isAdmin && <p>({userRole})</p>}
-							</div>
-							<Link className='nav-button' to='/dashboard'>
-								Dashboard
-							</Link>
-							<button className='nav-button' onClick={logout}>
-								Logout
-							</button>
+					<div className='nav-content'>
+						<div className='nav-info'>
+							<p>{userEmail.split('@')[0]}</p>
+							{admin && <p>({userRole})</p>}
 						</div>
-					) : (
-						<div className='nav-content'>
-							<div className='nav-info'>
-								<p>{userEmail.split('@')[0]}</p>
-								{isAdmin && <p>({userRole})</p>}
-							</div>
-							<button className='nav-button' onClick={logout}>
-								Logout
-							</button>
-						</div>
-					)
+						<Link className='nav-button btn-outline' onClick={logout}>
+							Logout
+						</Link>
+					</div>
 				) : (
 					<div className='nav-content'>
-						{title === 'Login' ? (
-							<Link className='nav-button' to='/register'>
-								Register
-							</Link>
-						) : title === 'Register' ? (
-							<Link className='nav-button' to='/login'>
-								Login
-							</Link>
-						) : (
-							<>
-								<Link className='nav-button' to='/login'>
-									Login
-								</Link>
-								<Link className='nav-button' to='/register'>
-									Register
-								</Link>
-							</>
-						)}
+						<Link className='nav-button btn-outline' to='/login'>
+							Login
+						</Link>
+						<Link className='nav-button btn-outline' to='/register'>
+							Register
+						</Link>
 					</div>
 				)}
 			</div>
