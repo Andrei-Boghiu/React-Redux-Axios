@@ -5,21 +5,43 @@ import { requestRegister } from '../api/authService'
 function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordValid, setPasswordValid] = useState(null)
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const navigate = useNavigate();
 
+    const validatePassword = (password) => {
+        setPassword(password)
+        const regEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{6,}$/;
+        setPasswordValid(regEx.test(password))
+    }
+
     const handleRegister = async (event) => {
         event.preventDefault()
         try {
+            if (!passwordValid) {
+                alert('Your password doesn\'t meet the requirements');
+                return
+            }
+
             const response = await requestRegister({ email, firstName, lastName, password })
 
-            console.log('Registration successful:', response.data)
-            alert('Registration successful!')
-            navigate('/login')
+            const resMessage = response?.data?.message;
+            if (resMessage) {
+                alert(resMessage)
+            } else {
+                alert('Registration successful!');
+            }
+            navigate('/login');
         } catch (error) {
-            console.error('Registration failed:', error.response ? error.response.data : 'Server error')
-            alert('Failed to register, please check your inputs and try again.')
+            const errMessage = error?.response?.data?.error?.detail;
+            console.log(error.response)
+
+            if (errMessage) {
+                alert(`Error: ${errMessage}`)
+            } else {
+                alert('Failed to register, please check your inputs and try again.');
+            }
         }
     }
 
@@ -31,6 +53,7 @@ function Register() {
                     <label>Email:</label>
                     <input
                         type='email'
+                        name='email'
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -41,6 +64,7 @@ function Register() {
                     <label>First Name:</label>
                     <input
                         type='text'
+                        name='firstName'
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         required
@@ -51,6 +75,7 @@ function Register() {
                     <label>Last Name:</label>
                     <input
                         type='text'
+                        name='lastName'
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         required
@@ -61,11 +86,22 @@ function Register() {
                     <label>Password:</label>
                     <input
                         type='password'
+                        name='password'
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => validatePassword(e.target.value)}
                         required
                         autoComplete='true'
+                        className={`${passwordValid === false ? 'issue-on-input' : null}`}
                     />
+                    <div>
+                        <label className='small'>Password requirements:</label>
+                        <ul>
+                            <li className='small'>At least 6 characters</li>
+                            <li className='small'>Include a alphabetic character (A-Za-z)</li>
+                            <li className='small'>Include a numeric character (0-9)</li>
+                            <li className='small'>Include a special character (@$!%*#?&)</li>
+                        </ul>
+                    </div>
                 </div>
                 <button type='submit'>Register</button>
                 <Link className='btn-link-small' to='/login'>Already have an account?</Link>

@@ -3,6 +3,11 @@
     outline-offset: 2px;
 }
 
+.issue-on-input {
+    outline: 2px dashed #e24a4a;
+    outline-offset: 2px;
+}
+
 .text-center {
     text-align: center;
 }
@@ -21,6 +26,11 @@
 
 .italic {
     font-style: italic;
+}
+
+.small {
+    font-size: small;
+    line-height: 14px;
 }
 
 .disabled {

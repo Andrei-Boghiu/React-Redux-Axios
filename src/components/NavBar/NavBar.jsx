@@ -57,12 +57,12 @@ export const NavBar = ({ title }) => {
 					</div>
 				) : (
 					<div className='nav-content'>
-						<Link className='nav-button btn-outline' to='/login'>
+						<NavButton to='/login'>
 							Login
-						</Link>
-						<Link className='nav-button btn-outline' to='/register'>
+						</NavButton>
+						<NavButton to='/register'>
 							Register
-						</Link>
+						</NavButton>
 					</div>
 				)}
 			</div>
