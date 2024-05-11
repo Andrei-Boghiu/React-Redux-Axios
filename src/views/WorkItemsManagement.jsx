@@ -128,6 +128,24 @@ function WorkItemsManagement() {
 				</div>
 			</div>
 			<div className='action-box'>
+				<h3>Adhoc Work Items</h3>
+				<p>
+					Insert adhoc tasks into the database, having the possibility to pre-assign the tasks to a specific user.
+					Suitable for daily tasks as 'Write an email to shareholders' or 'Deep dive on database issue'.
+				</p>
+
+				<input type='file' id='file-input' disabled={true} />
+
+				<div className='flex-row-gap'>
+					<button className='disabled' disabled={true}>
+						Upload Data
+					</button>
+					<button className='disabled' disabled={true}>
+						Download Template
+					</button>
+				</div>
+			</div>
+			<div className='action-box'>
 				<h3>Delete All Items from Team team_nr</h3>
 				<button className='disabled' disabled={true}>
 					Remove All

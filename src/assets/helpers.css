@@ -16,6 +16,10 @@
     text-align: right;
 }
 
+.underline {
+    text-decoration: underline;
+}
+
 .bold {
     font-weight: bold;
 }

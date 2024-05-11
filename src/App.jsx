@@ -26,7 +26,7 @@ function RoleRouteModel({ children, authorityLevel }) {
 		isAuthorized ? (
 			children
 		) : (
-			<Navigate to={location.state?.from || '/dashboard'} replace />
+			<Navigate to={location.state?.from || '/'} replace />
 		)
 	) : (
 		<Navigate to='/login' state={{ from: location }} replace />

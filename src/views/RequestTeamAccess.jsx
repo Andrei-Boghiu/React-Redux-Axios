@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getUserProfile, sendRequestTeamAccess } from '../api/userService'
+import { useAuthHeaders } from '../context/useAuthHeaders'
 
 function RequestTeamAccess() {
 	const [email, setEmail] = useState('')
@@ -12,9 +13,10 @@ function RequestTeamAccess() {
 	const [teamDescription, setTeamDescription] = useState(null)
 	const [enableSubmit, setEnableSubmit] = useState(false)
 	const navigate = useNavigate()
+	const headers = useAuthHeaders()
 
 	useEffect(() => {
-		getUserProfile().then(res => {
+		getUserProfile(headers).then(res => {
 			console.log(res)
 			setEmail(res.data.email)
 			setFirstName(res.data.first_name)
@@ -61,7 +63,7 @@ function RequestTeamAccess() {
 
 	return (
 		<div className='form-container'>
-			<h2>Request Access</h2>
+			<h2>Request Access to a Team</h2>
 			<form onSubmit={handleRequestTeamAccess}>
 				<div>
 					<label>Email:</label>

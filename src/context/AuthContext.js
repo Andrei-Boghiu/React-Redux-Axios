@@ -46,6 +46,11 @@ export const AuthProvider = ({ children }) => {
 	const logout = useCallback(() => {
 		localStorage.removeItem('token');
 		setAuthenticated(false);
+		setUserId(null);
+		setUsername(null);
+		setUserEmail(null);
+		setFirstName(null);
+		setTeams(null);
 	}, []);
 
 	const verifyToken = useCallback(async () => {

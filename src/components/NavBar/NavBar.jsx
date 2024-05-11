@@ -10,18 +10,21 @@ export const NavBar = () => {
 	const [selectedTeam, setSelectedTeam] = useState(null);
 
 	useEffect(() => {
-		console.log('Checking last team used...')
-		const lastTeamId = window.localStorage.getItem('lastSelectedTeamId');
-		if (lastTeamId) {
-			const selectedTeamData = teams.find((team) => team.team_id === Number(lastTeamId));
-			if (selectedTeamData) {
-				console.log('Last team found...')
-				console.log(selectedTeam)
-				setSelectedTeam(selectedTeamData);
-				changeTeam(lastTeamId);
+		console.log('use effect navBar')
+		if (isAuthenticated && teams.length > 0) {
+			console.log('Checking last team used...')
+			const lastTeamId = window.localStorage.getItem('lastSelectedTeamId');
+			if (lastTeamId) {
+				const selectedTeamData = teams.find((team) => team.team_id === Number(lastTeamId));
+				if (selectedTeamData) {
+					console.log('Last team found...')
+					console.log(selectedTeam)
+					setSelectedTeam(selectedTeamData);
+					changeTeam(lastTeamId);
+				}
 			}
 		}
-	}, [teams, changeTeam, selectedTeam]);
+	}, [teams, changeTeam, selectedTeam, isAuthenticated]);
 
 	const handleTeamChange = (teamId) => {
 		const selectedTeamData = teams.find((team) => team.team_id === Number(teamId));
@@ -43,7 +46,7 @@ export const NavBar = () => {
 					</NavButton>
 
 					{
-						userRoleAuthority >= 0 &&
+						teams?.length > 0 &&
 						<>
 							<NavButton to='/dashboard'>
 								Dashboard

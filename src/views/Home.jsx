@@ -64,7 +64,7 @@ function Home() {
 							<Link className='btn-primary' to='/create-team' >
 								Create a Team
 							</Link>
-							: <Link className='btn-link' to='/request-access'>Request Access to Create a Team</Link>
+							: <Link className='btn-link underline' to='/request-team-access'>Request Access to Create a Team</Link>
 						: <span className='btn-primary disabled'>Login to unlock</span>
 					}
 				</div>
