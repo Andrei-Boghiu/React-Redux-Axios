@@ -7,7 +7,7 @@ export const fetchAssignNewItem = async () => {
 }
 
 export const getUserWorkItems = async () => {
-	return await axios.get(`${API_BASE_URL}/api/work/get-user-items`, { headers: getHeaders() })
+	return await axios.get(`${API_BASE_URL}/api/work/lobby`, { headers: getHeaders() })
 }
 
 export const updateItemComplete = async (workItemId) => {

@@ -18,9 +18,9 @@ import './assets/helpers.css'
 import Register from './views/Register'
 
 function RoleRouteModel({ children, authorityLevel }) {
-	const { isAuthenticated, userRoleAuthority } = useAuth()
+	const { isAuthenticated, userRoleAuthority, teams } = useAuth()
 	const location = useLocation()
-	const isAuthorized = userRoleAuthority <= authorityLevel
+	const isAuthorized = teams?.length > 0 ? userRoleAuthority <= authorityLevel : false
 
 	return isAuthenticated ? (
 		isAuthorized ? (
@@ -73,11 +73,7 @@ const App = () => {
 			<Router>
 				<Layout>
 					<Routes>
-						<Route path='/'
-							element={
-								<Home />
-							}
-						/>
+						<Route path='/' element={<Home />} />
 						<Route
 							path='/login'
 							element={
@@ -150,11 +146,7 @@ const App = () => {
 								</AllocatorRoute>
 							}
 						/>
-						<Route path='*'
-							element={
-								<NotFound />
-							}
-						/>
+						<Route path='*' element={<NotFound />} />
 					</Routes>
 				</Layout>
 			</Router>

@@ -16,24 +16,26 @@ function RequestTeamAccess() {
 	const headers = useAuthHeaders()
 
 	useEffect(() => {
-		getUserProfile(headers).then(res => {
-			console.log(res)
-			setEmail(res.data.email)
-			setFirstName(res.data.first_name)
-			setLastName(res.data.last_name)
-			setDataReceived(true)
-		}).catch(err => {
-			console.error(err)
-			alert(`There was an error...`)
-		})
+		getUserProfile(headers)
+			.then((res) => {
+				console.log(res)
+				setEmail(res.data.email)
+				setFirstName(res.data.first_name)
+				setLastName(res.data.last_name)
+				setDataReceived(true)
+			})
+			.catch((err) => {
+				console.error(err)
+				alert(`There was an error...`)
+			})
 
 		setExistingTeams([
-			{ team_id: 1, team_name: "Development Team", "team_description": "The development team of this platform" },
-			{ team_id: 2, team_name: "Admins Team", "team_description": "The admin team of this platform" },
-			{ team_id: 3, team_name: "Work Allocators Team", "team_description": "The allocation team of this platform" },
-			{ team_id: 4, team_name: "Managers Team", "team_description": "The manager team" }
+			{ team_id: 1, team_name: 'Development Team', team_description: 'The development team of this platform' },
+			{ team_id: 2, team_name: 'Admins Team', team_description: 'The admin team of this platform' },
+			{ team_id: 3, team_name: 'Work Allocators Team', team_description: 'The allocation team of this platform' },
+			{ team_id: 4, team_name: 'Managers Team', team_description: 'The manager team' },
 		])
-	}, [])
+	}, [headers])
 
 	useEffect(() => {
 		console.log(enableSubmit)
@@ -41,7 +43,7 @@ function RequestTeamAccess() {
 
 	const handleTeamChange = (teamId) => {
 		setTeamId(teamId)
-		const selectedTeam = existingTeams.find(team => team.team_id === Number(teamId))
+		const selectedTeam = existingTeams.find((team) => team.team_id === Number(teamId))
 		setEnableSubmit(selectedTeam?.team_id === Number(teamId) ? true : false)
 		setTeamDescription(selectedTeam?.team_description)
 		console.log(teamId)
@@ -100,20 +102,30 @@ function RequestTeamAccess() {
 				</div>
 				<div>
 					<label>Team:</label>
-					<select onChange={e => handleTeamChange(e.target.value)}>
+					<select onChange={(e) => handleTeamChange(e.target.value)}>
 						<option value={null}>Select a team</option>
 						{existingTeams.length > 0 &&
-							existingTeams.map(team =>
-								<option value={team.team_id} key={team.team_id}>{team.team_name}</option>)
-						}
+							existingTeams.map((team) => (
+								<option value={team.team_id} key={team.team_id}>
+									{team.team_name}
+								</option>
+							))}
 					</select>
 				</div>
 
-				{teamDescription && <div>
-					<label>Team Description:</label>
-					<p>{teamDescription}</p>
-				</div>}
-				<button disabled={dataReceived ? false : enableSubmit ? false : true} className={`${!dataReceived ? 'disabled' : !enableSubmit ? 'disabled' : null}`} type='submit'>Register</button>
+				{teamDescription && (
+					<div>
+						<label>Team Description:</label>
+						<p>{teamDescription}</p>
+					</div>
+				)}
+				<button
+					disabled={dataReceived ? false : enableSubmit ? false : true}
+					className={`${!dataReceived ? 'disabled' : !enableSubmit ? 'disabled' : null}`}
+					type='submit'
+				>
+					Register
+				</button>
 			</form>
 		</div>
 	)
