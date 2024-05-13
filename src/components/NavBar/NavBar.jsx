@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './navBar.css'
 import brand from '../../brand.json'
 import NavButton from './NavButton'
+import DefaultNavigation from './DefaultNavigation'
+import { specialTeams } from './config'
 
 export const NavBar = () => {
-	const { logout, username, isAuthenticated, teams, changeTeam, userRoleName, userRoleAuthority } = useAuth()
+	const { logout, username, isAuthenticated, teams, teamId, changeTeam, userRoleName } = useAuth()
 	const [selectedTeam, setSelectedTeam] = useState(null)
+	const specialTeam = specialTeams.find(team => team.teamId === teamId);
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		console.log('use effect navBar')
+		console.log(`useEffect -> navBar`);
 		if (isAuthenticated && teams.length > 0) {
-			console.log('Checking last team used...')
 			const lastTeamId = window.localStorage.getItem('lastSelectedTeamId')
 			if (lastTeamId) {
 				const selectedTeamData = teams.find((team) => team.team_id === Number(lastTeamId))
 				if (selectedTeamData) {
-					console.log('Last team found...')
-					console.log(selectedTeam)
 					setSelectedTeam(selectedTeamData)
 					changeTeam(lastTeamId)
 				}
@@ -31,6 +32,7 @@ export const NavBar = () => {
 		if (selectedTeamData) {
 			setSelectedTeam(selectedTeamData)
 			changeTeam(teamId)
+			navigate('/')
 		}
 	}
 
@@ -43,26 +45,18 @@ export const NavBar = () => {
 				<div className='nav-routes'>
 					<NavButton to='/'>Home</NavButton>
 
-					{teams?.length > 0 && (
-						<>
-							<NavButton to='/dashboard'>Dashboard</NavButton>
+					{
+						teams?.length > 0 && <>
 							{
-								<>
-									{userRoleAuthority <= 3 && <NavButton to='/team-management'>Team Management</NavButton>}
-
-									{userRoleAuthority <= 1 && <NavButton to='/users-management'>Users Management</NavButton>}
-
-									{userRoleAuthority <= 4 && (
-										<>
-											<NavButton to='/work-items-management'>Work Items Management</NavButton>
-
-											<NavButton to='/statistics-dashboard'>Statistics Dashboard</NavButton>
-										</>
-									)}
-								</>
+								specialTeam ?
+									specialTeam.navigation.map(navBtn =>
+										<NavButton key={navBtn.btnId} to={navBtn.navigateTo}>
+											{navBtn.btnName}
+										</NavButton>)
+									: <DefaultNavigation />
 							}
 						</>
-					)}
+					}
 				</div>
 			</div>
 
@@ -84,7 +78,7 @@ export const NavBar = () => {
 										value={selectedTeam ? selectedTeam.team_id : ''}
 									>
 										{teams.map((team) => (
-											<option key={team.team_id} value={team.team_id} className='nav-team-option'>
+											<option key={team.team_id} value={team.team_id} className='nav-team-option' disabled={!team.approved}>
 												{team.team_name}
 											</option>
 										))}

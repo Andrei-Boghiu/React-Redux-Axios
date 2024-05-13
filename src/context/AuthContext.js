@@ -16,11 +16,12 @@ export const AuthProvider = ({ children }) => {
 	const [teamId, setTeamId] = useState(null)
 
 	const changeTeam = useCallback((teamId) => {
-		console.log('changing team...')
 		const newTeam = teams.find((team) => team.team_id === Number(teamId));
 		if (newTeam) {
+			const approved = newTeam.approved;
+			console.log(newTeam)
 			setUserRoleName(newTeam.role_name);
-			setRoleAuthority(newTeam.role_authority)
+			setRoleAuthority(approved ? newTeam.role_authority : 9999);
 			setTeamId(newTeam.team_id)
 			window.localStorage.setItem('lastSelectedTeamId', teamId);
 		} else if (teams.length > 0) {
@@ -70,6 +71,7 @@ export const AuthProvider = ({ children }) => {
 	}, [login, logout]);
 
 	useEffect(() => {
+		console.log(`useEffect -> authContext`);
 		verifyToken();
 	}, [verifyToken, login, logout]);
 
@@ -86,6 +88,7 @@ export const AuthProvider = ({ children }) => {
 				userEmail,
 				firstName,
 				teams,
+				setTeams,
 				userRoleName,
 				userRoleAuthority
 			}}

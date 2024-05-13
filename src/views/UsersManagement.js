@@ -1,35 +1,36 @@
 import React, { useState, useEffect } from 'react'
-import UsersTable from '../components/shared/UsersTable'
 import { getAllUsers } from '../api/userService';
 import { useAuthHeaders } from '../context/useAuthHeaders';
+import Table from '../components/shared/Table';
+import LoadingTable from '../components/Loaders/LoadingTable';
 
-function UserManagement() {
+export default function UsersManagement() {
 	const [users, setUsers] = useState([]);
+	const [loading, setLoading] = useState(false);
+
 	const headers = useAuthHeaders()
 
 	useEffect(() => {
+		console.log(`useEffect -> UsersManagement`);
+		setLoading(true);
 		getAllUsers(headers)
-			.then((res) => setUsers(res.data))
+			.then((res) => setUsers(res.data.users))
 			.catch((err) => {
 				console.error(err);
 				alert('There was an error while getting the users.');
-			});
+			}).finally(() => setLoading(false))
 	}, [headers]);
 
 	return (
 		<div>
-
 			<div>
 				<h3>Requested Access</h3>
 				[Nothing yet...]
 			</div>
 			<div>
 				<h3>All Users</h3>
-				{users?.length > 0 && <UsersTable userList={users} />}
-
+				{loading ? <LoadingTable /> : <Table rows={users} />}
 			</div>
 		</div>
 	)
 }
-
-export default UserManagement

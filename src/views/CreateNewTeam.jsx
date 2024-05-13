@@ -1,6 +1,6 @@
 import React from 'react'
 
-function CreateTeam() {
+export default function CreateNewTeam() {
     return (
         <div className='form-container'>
             <h2>Create Your Team</h2>
@@ -28,6 +28,4 @@ function CreateTeam() {
             </form>
         </div>
     )
-}
-
-export default CreateTeam;
+};

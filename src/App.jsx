@@ -2,13 +2,16 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Login from './views/Login'
 import RequestTeamAccess from './views/RequestTeamAccess'
-import CreateTeam from './views/CreateTeam'
+import CreateNewTeam from './views/CreateNewTeam'
 import Dashboard from './views/Dashboard'
 import Home from './views/Home'
+import MyTeams from './views/MyTeams'
 import UserManagement from './views/UsersManagement'
 import TeamManagement from './views/TeamManagement'
+import TeamsManagement from './views/TeamsManagement'
 import WorkItemsManagement from './views/WorkItemsManagement'
-import StatisticsDashboard from './views/StatisticsDashboard'
+import TeamStatistics from './views/TeamStatistics'
+import TeamsStatistics from './views/TeamsStatistics'
 import NotFound from './views/NotFound'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Layout from './Layout'
@@ -20,7 +23,9 @@ import Register from './views/Register'
 function RoleRouteModel({ children, authorityLevel }) {
 	const { isAuthenticated, userRoleAuthority, teams } = useAuth()
 	const location = useLocation()
-	const isAuthorized = teams?.length > 0 ? userRoleAuthority <= authorityLevel : false
+	const joinedAnyTeam = teams?.length > 0;
+	const approvedInATeam = joinedAnyTeam ? teams.some(team => team.approved) : false;
+	const isAuthorized = approvedInATeam ? userRoleAuthority <= authorityLevel : false;
 
 	return isAuthenticated ? (
 		isAuthorized ? (
@@ -45,10 +50,6 @@ function TeamAdminRoute({ children }) {
 	return RoleRouteModel({ children, authorityLevel: 3 })
 }
 
-// function ManagerRoute({ children }) {
-// 	return RoleRouteModel({ children, authorityLevel: 2 })
-// }
-
 function AdminRoute({ children }) {
 	return RoleRouteModel({ children, authorityLevel: 1 })
 }
@@ -67,7 +68,7 @@ function GuestRoute({ children }) {
 	return isAuthenticated ? <Navigate to={location.state?.from || '/dashboard'} replace /> : children
 }
 
-const App = () => {
+export default function App() {
 	return (
 		<AuthProvider>
 			<Router>
@@ -99,10 +100,10 @@ const App = () => {
 							}
 						/>
 						<Route
-							path='/create-team'
+							path='/create-new-team'
 							element={
 								<TeamAdminRoute>
-									<CreateTeam />
+									<CreateNewTeam />
 								</TeamAdminRoute>
 							}
 						/>
@@ -114,12 +115,28 @@ const App = () => {
 								</TeamMemberRoute>
 							}
 						/>
+							<Route
+							path='/my-teams'
+							element={
+								<TeamAdminRoute>
+									<MyTeams />
+								</TeamAdminRoute>
+							}
+						/>
 						<Route
-							path='/statistics-dashboard'
+							path='/team-statistics'
 							element={
 								<AllocatorRoute>
-									<StatisticsDashboard />
+									<TeamStatistics />
 								</AllocatorRoute>
+							}
+						/>
+						<Route
+							path='/teams-statistics'
+							element={
+								<AdminRoute>
+									<TeamsStatistics />
+								</AdminRoute>
 							}
 						/>
 						<Route
@@ -128,6 +145,14 @@ const App = () => {
 								<TeamAdminRoute>
 									<TeamManagement />
 								</TeamAdminRoute>
+							}
+						/>
+						<Route
+							path='/teams-management'
+							element={
+								<AdminRoute>
+									<TeamsManagement />
+								</AdminRoute>
 							}
 						/>
 						<Route
@@ -152,6 +177,4 @@ const App = () => {
 			</Router>
 		</AuthProvider>
 	)
-}
-
-export default App
+};

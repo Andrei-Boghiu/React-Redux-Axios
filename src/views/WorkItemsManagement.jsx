@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import * as XLSX from 'xlsx'
 import { insertWorkItems } from '../api/workService'
 
-function WorkItemsManagement() {
+export default function WorkItemsManagement() {
 	const [file, setFile] = useState(null)
 	const requiredHeaders = ['title', 'description', 'team_id'];
 	const templateHeaders = ['aux_id', 'title', 'description', 'team_id'];
@@ -155,4 +155,4 @@ function WorkItemsManagement() {
 	)
 }
 
-export default WorkItemsManagement
+

@@ -1,65 +1,73 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getUserProfile, sendRequestTeamAccess } from '../api/userService'
+import { getUserProfile } from '../api/userService'
 import { useAuthHeaders } from '../context/useAuthHeaders'
+import { fetchAvailableTeamsToJoin, requestTeamAccess } from '../api/teamsService'
 
-function RequestTeamAccess() {
-	const [email, setEmail] = useState('')
-	const [firstName, setFirstName] = useState('')
-	const [lastName, setLastName] = useState('')
-	const [dataReceived, setDataReceived] = useState(false)
-	const [existingTeams, setExistingTeams] = useState([]) // TO REPLACE WITH API CALL
-	const [teamId, setTeamId] = useState(null)
-	const [teamDescription, setTeamDescription] = useState(null)
-	const [enableSubmit, setEnableSubmit] = useState(false)
-	const navigate = useNavigate()
-	const headers = useAuthHeaders()
+export default function RequestTeamAccess() {
+	const navigate = useNavigate();
+	const headers = useAuthHeaders();
+
+	const [email, setEmail] = useState('');
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
+	const [availableTeams, setAvailableTeams] = useState([]);
+
+	const [dataReceived, setDataReceived] = useState(false);
+	const [teamId, setTeamId] = useState(null);
+	const [teamDescription, setTeamDescription] = useState(null);
+	const [enableSubmit, setEnableSubmit] = useState(false);
 
 	useEffect(() => {
-		getUserProfile(headers)
-			.then((res) => {
-				console.log(res)
-				setEmail(res.data.email)
-				setFirstName(res.data.first_name)
-				setLastName(res.data.last_name)
+		console.log(`useEffect -> request team access`);
+		Promise.all([getUserProfile(headers), fetchAvailableTeamsToJoin(headers)])
+			.then(([userProfileResponse, availableTeamsResponse]) => {
+
+				// Set User Profile Data
+				setEmail(userProfileResponse.data.email)
+				setFirstName(userProfileResponse.data.first_name)
+				setLastName(userProfileResponse.data.last_name)
+
+				// Set Available Teams to join
+				setAvailableTeams(availableTeamsResponse.data)
+
 				setDataReceived(true)
-			})
-			.catch((err) => {
-				console.error(err)
-				alert(`There was an error...`)
-			})
+			}).catch((error) => {
+				const errMessage = error?.response?.data?.message
+				console.error('Login failed:', error.response ? error.response.data : 'Server error');
 
-		setExistingTeams([
-			{ team_id: 1, team_name: 'Development Team', team_description: 'The development team of this platform' },
-			{ team_id: 2, team_name: 'Admins Team', team_description: 'The admin team of this platform' },
-			{ team_id: 3, team_name: 'Work Allocators Team', team_description: 'The allocation team of this platform' },
-			{ team_id: 4, team_name: 'Managers Team', team_description: 'The manager team' },
-		])
+				if (errMessage) {
+					alert(`Error: ${errMessage}`)
+				} else {
+					alert('Error fetching the required data.');
+				}
+			});
+
 	}, [headers])
-
-	useEffect(() => {
-		console.log(enableSubmit)
-	}, [enableSubmit])
 
 	const handleTeamChange = (teamId) => {
 		setTeamId(teamId)
-		const selectedTeam = existingTeams.find((team) => team.team_id === Number(teamId))
-		setEnableSubmit(selectedTeam?.team_id === Number(teamId) ? true : false)
-		setTeamDescription(selectedTeam?.team_description)
-		console.log(teamId)
+		const selectedTeam = availableTeams.find((team) => team.id === Number(teamId))
+		setEnableSubmit(selectedTeam?.id === Number(teamId) ? true : false)
+		setTeamDescription(selectedTeam?.description)
 	}
 
 	const handleRequestTeamAccess = async (event) => {
-		event.preventDefault()
+		event.preventDefault();
 		try {
-			const response = await sendRequestTeamAccess(teamId)
+			const response = await requestTeamAccess(headers, teamId);
+			const resMessage = response?.data?.message;
 
-			console.log('Registration successful:', response.data)
-			alert('Registration successful!')
-			navigate('/login')
+			if (resMessage) {
+				alert(resMessage)
+			} else {
+				alert('Request successful! An admin will have to approve your request.');
+			}
+
+			navigate('/', { state: { from: '/request-team-access' } });
 		} catch (error) {
-			console.error('Registration failed:', error.response ? error.response.data : 'Server error')
-			alert('Failed to register, please check your inputs and try again.')
+			console.error('Registration failed:', error.response ? error.response.data : 'Server error');
+			alert('Failed to register, please check your inputs and try again.');
 		}
 	}
 
@@ -102,12 +110,12 @@ function RequestTeamAccess() {
 				</div>
 				<div>
 					<label>Team:</label>
-					<select onChange={(e) => handleTeamChange(e.target.value)}>
+					<select onChange={(e) => handleTeamChange(e.target.value)} disabled={!dataReceived}>
 						<option value={null}>Select a team</option>
-						{existingTeams.length > 0 &&
-							existingTeams.map((team) => (
-								<option value={team.team_id} key={team.team_id}>
-									{team.team_name}
+						{availableTeams.length > 0 &&
+							availableTeams.map((team) => (
+								<option value={team.id} key={team.id}>
+									{team.name}
 								</option>
 							))}
 					</select>
@@ -115,20 +123,19 @@ function RequestTeamAccess() {
 
 				{teamDescription && (
 					<div>
-						<label>Team Description:</label>
-						<p>{teamDescription}</p>
+						<label className='small'>Team Description:</label>
+						<p className='small'>{teamDescription}</p>
 					</div>
 				)}
 				<button
-					disabled={dataReceived ? false : enableSubmit ? false : true}
+					disabled={dataReceived && !enableSubmit}
 					className={`${!dataReceived ? 'disabled' : !enableSubmit ? 'disabled' : null}`}
 					type='submit'
 				>
-					Register
+					Submit
 				</button>
 			</form>
 		</div>
 	)
-}
+};
 
-export default RequestTeamAccess

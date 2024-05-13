@@ -35,6 +35,7 @@
 .small {
     font-size: small;
     line-height: 14px;
+    text-wrap: wrap;
 }
 
 .disabled {

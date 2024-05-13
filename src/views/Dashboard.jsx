@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import WorkItemsTable from '../components/shared/WorkItemsTable'
 import { fetchAssignNewItem, getUserWorkItems, updateItemComplete, updateItemUnassign } from '../api/workService'
 
-function Dashboard() {
+export default function Dashboard() {
 	const [workItems, setWorkItems] = useState([]);
 
 	useEffect(() => {
+		console.log(`useEffect -> Dashboard`);
 		updateLobby()
 	}, [])
 
@@ -23,8 +24,6 @@ function Dashboard() {
 		try {
 			const response = await fetchAssignNewItem()
 			setWorkItems(response.data)
-			console.log(response.data)
-			// updateLobby()
 		} catch (error) {
 			console.error('Error fetching work items', error)
 			const errMessage = error.response.data
@@ -71,4 +70,4 @@ function Dashboard() {
 	)
 }
 
-export default Dashboard
+

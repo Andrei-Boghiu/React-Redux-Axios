@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { requestRegister } from '../api/authService'
 
-function Register() {
+export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordValid, setPasswordValid] = useState(null)
@@ -117,6 +117,4 @@ function Register() {
             </form>
         </div>
     )
-}
-
-export default Register;
+};

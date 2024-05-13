@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { loginRequest } from '../api/authService'
 
-function Login() {
+export default function Login() {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [capsLockOn, setCapsLockOn] = useState(false)
@@ -39,7 +39,7 @@ function Login() {
 
 			if (token && id && username && email && firstName) {
 				login({ token, id, username, email: resEmail, firstName, teams })
-				navigate('/dashboard')
+				navigate('/');
 			} else {
 				console.error('Login failed: Incomplete data received')
 				alert('Failed to log in, please try again.')
@@ -97,6 +97,4 @@ function Login() {
 			</form>
 		</div>
 	)
-}
-
-export default Login
+};

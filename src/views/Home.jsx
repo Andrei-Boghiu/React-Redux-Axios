@@ -1,16 +1,55 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import brand from '../brand.json'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { checkUserTeams } from '../api/teamsService'
+import { useAuthHeaders } from '../context/useAuthHeaders'
+import Table from '../components/shared/Table'
 
-function Home() {
+export default function Home() {
+	const { isAuthenticated, firstName, userRoleAuthority, teams, setTeams } = useAuth()
+	const headers = useAuthHeaders();
+
+	const location = useLocation();
+	const previousPath = location.state?.from;
+	const awaitingApproval = teams?.some(team => team.approved === false);
+	const awaitingApprovalTeams = teams?.filter(team => team.approved === false);
+
+	console.log("🚀 ~ file: Home.jsx:18 ~ Home ~ awaitingApprovalTeams:", awaitingApprovalTeams);
+
+	// ! Make an API that will be called if any of the teams are awaiting for approval to get data
+	// ! or use the existent API but use just a few columns
+	// ! or improve the existent API with the needed columns and filter only the needed columns
+	
+	useEffect(() => {
+		console.log('useEffect => Home');
+		// console.log(`previousPath:`, previousPath)
+		console.log(`awaitingApproval:`, awaitingApproval)
+
+		if (previousPath === '/request-team-access' || awaitingApproval) {
+			checkUserTeams(headers).then(res => {
+				setTeams(res.data.teams)
+				console.log(res.data)
+			}).catch(error => {
+				console.error(error);
+				alert('Error while updating the teams...')
+			})
+		}
+
+	}, [awaitingApproval, headers, setTeams, previousPath])
+
 	// const random = Math.floor(Math.random() * brand.welcome_back_message.length);
 	const day = new Date().getDay()
 	const randomFunnyMessage = brand.welcome_back_message[day]
-	const { isAuthenticated, firstName, userRoleAuthority, teams } = useAuth()
 
 	return (
 		<div>
+
+
+			{
+				awaitingApproval && <Table rows={awaitingApprovalTeams} />
+			}
+
 			{isAuthenticated ? (
 				<>
 					<h1 className='text-center'>Welcome, {firstName}</h1>
@@ -22,6 +61,7 @@ function Home() {
 					<p className='text-center'>{brand.subtitle}</p>
 				</>
 			)}
+
 
 			<div className='flex-wrap'>
 				{!isAuthenticated && (
@@ -78,5 +118,3 @@ function Home() {
 		</div>
 	)
 }
-
-export default Home
