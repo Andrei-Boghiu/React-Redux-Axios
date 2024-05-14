@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 
 export const useAuthHeaders = () => {
   const { userRoleAuthority, teamId } = useAuth();
-  const token = localStorage.getItem('token');
+  const token = window.localStorage.getItem('token');
 
   const headers = useMemo(() => {
     return {

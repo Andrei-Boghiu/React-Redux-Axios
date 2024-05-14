@@ -1,11 +1,12 @@
 import React from 'react'
 
-export default function Table({ rows, actions }) {
+export default function Table({ rows, actions, title = null }) {
     if (rows.length === 0) return null
     const areActions = actions?.length > 0
 
     return (
         <table>
+            {title && <caption>{title}</caption>} 
             <thead>
                 <tr key="table-thead">
                     {Object.keys(rows[0]).map((key, index) =>

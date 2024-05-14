@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
 	const login = useCallback(
 		({ token, id, username, email, firstName, teams }) => {
-			localStorage.setItem('token', token);
+			window.localStorage.setItem('token', token);
 			setAuthenticated(true);
 			setUserId(id);
 			setUsername(username);
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
 		}, []);
 
 	const logout = useCallback(() => {
-		localStorage.removeItem('token');
+		window.localStorage.removeItem('token');
 		setAuthenticated(false);
 		setUserId(null);
 		setUsername(null);
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
 	const verifyToken = useCallback(async () => {
 		try {
-			const token = localStorage.getItem('token');
+			const token = window.localStorage.getItem('token');
 
 			if (token) {
 				const response = await requestVerifyToken();

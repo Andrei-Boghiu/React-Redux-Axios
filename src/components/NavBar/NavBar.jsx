@@ -70,7 +70,7 @@ export const NavBar = () => {
 						{teams.length > 0 ? (
 							<>
 								{teams.length === 1 ? (
-									<span className='nav-button btn-outline'>{teams[0].team_name}</span>
+									<span className={`nav-button btn-outline ${teams[0].approved ? '' : 'disabled'}`}>{teams[0].team_name}</span>
 								) : (
 									<select
 										className='nav-team-selector'

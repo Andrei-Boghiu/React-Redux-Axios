@@ -8,6 +8,21 @@ table {
 	background-color: #ffffff;
 }
 
+table caption {
+	text-align: start;
+	background-color: #0a152f;
+	color: #ffffff;
+	padding: 0 15px;
+	border-bottom: 1px solid #ffffff;
+	font-weight: 600;
+	border-start-start-radius: 8px;
+	border-start-end-radius: 8px;
+}
+
+thead {
+	border-radius: none;
+}
+
 th,
 td {
 	padding: 12px 15px;
@@ -16,6 +31,7 @@ td {
 }
 
 th {
+	border-radius: none;
 	background-color: #0a152f;
 	color: #ffffff;
 	font-size: 16px;

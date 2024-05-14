@@ -23,8 +23,8 @@ import Register from './views/Register'
 function RoleRouteModel({ children, authorityLevel }) {
 	const { isAuthenticated, userRoleAuthority, teams } = useAuth()
 	const location = useLocation()
-	const joinedAnyTeam = teams?.length > 0;
-	const approvedInATeam = joinedAnyTeam ? teams.some(team => team.approved) : false;
+	const joinedAnyTeam = teams?.length > 0; // if at least requested access in a team
+	const approvedInATeam = joinedAnyTeam ? teams.some(team => team.approved) : false; // if is approved in any team
 	const isAuthorized = approvedInATeam ? userRoleAuthority <= authorityLevel : false;
 
 	return isAuthenticated ? (
@@ -115,7 +115,7 @@ export default function App() {
 								</TeamMemberRoute>
 							}
 						/>
-							<Route
+						<Route
 							path='/my-teams'
 							element={
 								<TeamAdminRoute>

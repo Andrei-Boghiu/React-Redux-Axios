@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { checkUserTeams } from '../api/teamsService'
 import { useAuthHeaders } from '../context/useAuthHeaders'
 import Table from '../components/shared/Table'
+import cloneObjKeys from '../utils/cloneObjKeys'
 
 export default function Home() {
 	const { isAuthenticated, firstName, userRoleAuthority, teams, setTeams } = useAuth()
@@ -15,12 +16,13 @@ export default function Home() {
 	const awaitingApproval = teams?.some(team => team.approved === false);
 	const awaitingApprovalTeams = teams?.filter(team => team.approved === false);
 
-	console.log("🚀 ~ file: Home.jsx:18 ~ Home ~ awaitingApprovalTeams:", awaitingApprovalTeams);
+	const keysToKeep = ['id', 'email', 'team_name', 'team_description', 'role_name', 'team_owned_by'];
+	const clonedData = cloneObjKeys({
+		originalData: awaitingApprovalTeams,
+		keysToKeep,
+		consoleLogSteps: true
+	})
 
-	// ! Make an API that will be called if any of the teams are awaiting for approval to get data
-	// ! or use the existent API but use just a few columns
-	// ! or improve the existent API with the needed columns and filter only the needed columns
-	
 	useEffect(() => {
 		console.log('useEffect => Home');
 		// console.log(`previousPath:`, previousPath)
@@ -45,11 +47,6 @@ export default function Home() {
 	return (
 		<div>
 
-
-			{
-				awaitingApproval && <Table rows={awaitingApprovalTeams} />
-			}
-
 			{isAuthenticated ? (
 				<>
 					<h1 className='text-center'>Welcome, {firstName}</h1>
@@ -61,7 +58,6 @@ export default function Home() {
 					<p className='text-center'>{brand.subtitle}</p>
 				</>
 			)}
-
 
 			<div className='flex-wrap'>
 				{!isAuthenticated && (
@@ -114,6 +110,9 @@ export default function Home() {
 						<span className='btn-primary disabled'>Login to unlock</span>
 					)}
 				</div>
+
+				{awaitingApproval && <Table rows={clonedData} title={'Awaiting Approval'} />}
+
 			</div>
 		</div>
 	)
