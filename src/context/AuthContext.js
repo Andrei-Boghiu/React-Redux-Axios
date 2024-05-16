@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 	const [teams, setTeams] = useState([]);
 
 	const [userRoleName, setUserRoleName] = useState(null);
-	const [userRoleAuthority, setRoleAuthority] = useState(null)
+	const [userRoleAuthority, setRoleAuthority] = useState(9999)
 	const [teamId, setTeamId] = useState(null)
 
 	const changeTeam = useCallback((teamId) => {
@@ -36,17 +36,26 @@ export const AuthProvider = ({ children }) => {
 		({ token, id, username, email, firstName, teams }) => {
 			window.localStorage.setItem('token', token);
 			setAuthenticated(true);
+			setRoleAuthority(5)
 			setUserId(id);
 			setUsername(username);
 			setUserEmail(email);
 			setFirstName(firstName);
 			setTeams(teams);
 
+			const lastTeamId = window.localStorage.getItem('lastSelectedTeamId')
+			if (lastTeamId) {
+				const selectedTeamData = teams.find((team) => team.team_id === Number(lastTeamId))
+				if (selectedTeamData) {
+					setRoleAuthority(selectedTeamData.authority_level)
+				}
+			}
 		}, []);
 
 	const logout = useCallback(() => {
 		window.localStorage.removeItem('token');
 		setAuthenticated(false);
+		setRoleAuthority(9999)
 		setUserId(null);
 		setUsername(null);
 		setUserEmail(null);

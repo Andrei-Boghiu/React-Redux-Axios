@@ -76,7 +76,6 @@ export default function TeamManagement() {
 				: <>
 					{awaitingApproval && <Table rows={awaitingApproval} title='Awaiting approval' actions={[ApproveMember]} />}
 					{activeMembers && <Table rows={activeMembers} title='Active members' />}
-
 				</>
 			}
 		</div>

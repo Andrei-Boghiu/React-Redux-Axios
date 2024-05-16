@@ -8,9 +8,10 @@ import DefaultNavigation from './DefaultNavigation'
 import { specialTeams } from './config'
 
 export const NavBar = () => {
-	const { logout, username, isAuthenticated, teams, teamId, changeTeam, userRoleName } = useAuth()
-	const [selectedTeam, setSelectedTeam] = useState(null)
-	const specialTeam = specialTeams.find(team => team.teamId === teamId);
+	const { logout, username, isAuthenticated, teams, teamId, changeTeam, userRoleName } = useAuth();
+	const [selectedTeam, setSelectedTeam] = useState(null);
+	const specialTeam = specialTeams.find(team => team.teamId === teamId && team.approved);
+	const approvedInATeam = teams?.some(team => team.approved);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -67,27 +68,29 @@ export const NavBar = () => {
 							<p>{username}</p>
 							{<p>{selectedTeam && `(${userRoleName})`}</p>}
 						</div>
-						{teams.length > 0 ? (
-							<>
-								{teams.length === 1 ? (
-									<span className={`nav-button btn-outline ${teams[0].approved ? '' : 'disabled'}`}>{teams[0].team_name}</span>
-								) : (
-									<select
-										className='nav-team-selector'
-										onChange={(e) => handleTeamChange(e.target.value)}
-										value={selectedTeam ? selectedTeam.team_id : ''}
-									>
-										{teams.map((team) => (
-											<option key={team.team_id} value={team.team_id} className='nav-team-option' disabled={!team.approved}>
-												{team.team_name}
-											</option>
-										))}
-									</select>
-								)}
-							</>
-						) : (
-							<NavButton to='/request-team-access'>Request Team Access</NavButton>
-						)}
+						{
+							approvedInATeam ? (
+								<>
+									{teams.length === 1 ? (
+										<span className={`nav-button btn-outline ${teams[0].approved ? '' : 'disabled'}`}>{teams[0].team_name}</span>
+									) : (
+										<select
+											className='nav-team-selector'
+											onChange={(e) => handleTeamChange(e.target.value)}
+											value={selectedTeam ? selectedTeam.team_id : ''}
+										>
+											{teams.map((team) => (
+												<option key={team.team_id} value={team.team_id} className='nav-team-option' disabled={!team.approved}>
+													{team.team_name}
+												</option>
+											))}
+										</select>
+									)}
+								</>
+							) : (
+								<NavButton to='/request-team-access'>Request Team Access</NavButton>
+							)
+						}
 						<Link className='nav-button btn-outline' onClick={logout}>
 							Logout
 						</Link>

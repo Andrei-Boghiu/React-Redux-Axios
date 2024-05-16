@@ -4,6 +4,6 @@ export const getHeaders = (userRoleAuthority) => {
 	const token = localStorage.getItem('token')
 	return {
 		Authorization: token ? `Bearer ${token}` : '',
-		'Role_Authority_Level': userRoleAuthority || null
+		'Role_Authority_Level': userRoleAuthority || 9999
 	}
 }

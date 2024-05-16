@@ -1,48 +1,51 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import brand from '../brand.json'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { checkUserTeams } from '../api/teamsService'
 import { useAuthHeaders } from '../context/useAuthHeaders'
 import Table from '../components/shared/Table'
 import cloneObjKeys from '../utils/cloneObjKeys'
 
 export default function Home() {
-	const { isAuthenticated, firstName, userRoleAuthority, teams, setTeams } = useAuth()
+	const { isAuthenticated, firstName, userRoleAuthority, teams, setTeams } = useAuth();
 	const headers = useAuthHeaders();
-
-	const location = useLocation();
-	const previousPath = location.state?.from;
-	const awaitingApproval = teams?.some(team => team.approved === false);
-	const awaitingApprovalTeams = teams?.filter(team => team.approved === false);
+	const [awaitingApproval, setAwaitingApproval] = useState(false);
+	const [awaitingApprovalTeams, setAwaitingApprovalTeams] = useState([]);
 
 	const keysToKeep = ['id', 'email', 'team_name', 'team_description', 'role_name', 'team_owned_by'];
-	const clonedData = cloneObjKeys({
-		originalData: awaitingApprovalTeams,
-		keysToKeep,
-		consoleLogSteps: true
-	})
+
+	useEffect(() => {
+		const awaitingApprovalTeams = teams?.filter(team => !team.approved);
+		setAwaitingApproval(awaitingApprovalTeams.length > 0);
+		setAwaitingApprovalTeams(awaitingApprovalTeams);
+	}, [teams]);
 
 	useEffect(() => {
 		console.log('useEffect => Home');
-		// console.log(`previousPath:`, previousPath)
-		console.log(`awaitingApproval:`, awaitingApproval)
+		console.log(`awaitingApproval:`, awaitingApproval);
 
-		if (previousPath === '/request-team-access' || awaitingApproval) {
-			checkUserTeams(headers).then(res => {
-				setTeams(res.data.teams)
-				console.log(res.data)
-			}).catch(error => {
-				console.error(error);
-				alert('Error while updating the teams...')
-			})
+		if (awaitingApproval) {
+			checkUserTeams(headers)
+				.then(res => {
+					setTeams(res.data.teams);
+					console.log(res.data);
+				})
+				.catch(error => {
+					console.error(error);
+					alert('Error while updating the teams...');
+				});
 		}
+	}, [awaitingApproval, headers, setTeams]);
 
-	}, [awaitingApproval, headers, setTeams, previousPath])
-
-	// const random = Math.floor(Math.random() * brand.welcome_back_message.length);
 	const day = new Date().getDay()
-	const randomFunnyMessage = brand.welcome_back_message[day]
+	const randomFunnyMessage = brand.welcome_back_message[day];
+
+	const awaitingApprovalTeamsData = cloneObjKeys({
+		originalData: awaitingApprovalTeams,
+		keysToKeep,
+		consoleLogSteps: true,
+	});
 
 	return (
 		<div>
@@ -111,7 +114,7 @@ export default function Home() {
 					)}
 				</div>
 
-				{awaitingApproval && <Table rows={clonedData} title={'Awaiting Approval'} />}
+				{awaitingApproval && <Table rows={awaitingApprovalTeamsData} title={'Awaiting Approval'} />}
 
 			</div>
 		</div>

@@ -3,13 +3,14 @@ import { useAuth } from '../../context/AuthContext'
 import NavButton from './NavButton'
 
 export default function DefaultNavigation() {
-    const { userRoleAuthority } = useAuth()
+    const { userRoleAuthority, teams } = useAuth()
+    const approvedMember = teams?.some(team => team.approved)
     return (
         <>
             {
 
                 <>
-                    <NavButton to='/dashboard'>Dashboard</NavButton>
+                    {approvedMember && <NavButton to='/dashboard'>Dashboard</NavButton>}
                     {
                         <>
                             {userRoleAuthority <= 3 && <NavButton to='/team-management'>Team Management</NavButton>}
