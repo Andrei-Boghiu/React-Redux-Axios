@@ -1,40 +1,48 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import Login from './views/Login'
-import RequestTeamAccess from './views/RequestTeamAccess'
-import CreateNewTeam from './views/CreateNewTeam'
+import Login from './views/Login/Login'
+import Register from './views/Register/Register'
+import TeamAccessRequestForm from './views/AccessRequests/TeamAccessRequestForm'
+import CreateNewTeam from './views/CreateNewTeamForm'
 import Dashboard from './views/Dashboard'
-import Home from './views/Home'
+import Home from './views/Home/Home'
 import MyTeams from './views/MyTeams'
-import UserManagement from './views/UsersManagement'
-import TeamManagement from './views/TeamManagement'
-import TeamsManagement from './views/TeamsManagement'
+import UserManagement from './views/Management/UsersManagement'
+import TeamManagement from './views/Management/TeamManagement'
+import TeamsManagement from './views/Management/TeamsManagement'
 import WorkItemsManagement from './views/WorkItemsManagement'
-import TeamStatistics from './views/TeamStatistics'
-import TeamsStatistics from './views/TeamsStatistics'
+import TeamStatistics from './views/Statistics/TeamStatistics'
+import TeamsStatistics from './views/Statistics/TeamsStatistics'
 import NotFound from './views/NotFound'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Layout from './Layout'
 import './App.css'
 import './assets/buttons.css'
 import './assets/helpers.css'
-import Register from './views/Register'
+import AdminTeamManagement from './views/Management/AdminTeamManagement'
 
 function RoleRouteModel({ children, authorityLevel }) {
 	const { isAuthenticated, userRoleAuthority, teams } = useAuth()
 	const location = useLocation()
-	const joinedAnyTeam = teams?.length > 0; // if at least requested access in a team
-	const approvedInATeam = joinedAnyTeam ? teams.some(team => team.approved) : false; // if is approved in any team
-	const isAuthorized = approvedInATeam ? userRoleAuthority <= authorityLevel : false;
+	const joinedAnyTeam = teams?.length > 0 // if at least requested access in a team
+	const approvedInATeam = joinedAnyTeam ? teams.some((team) => team.approved) : false // if is approved in any team
+	const isAuthorized = approvedInATeam ? userRoleAuthority <= authorityLevel : false
 
 	return isAuthenticated ? (
 		isAuthorized ? (
 			children
 		) : (
-			<Navigate to={location.state?.from || '/'} replace />
+			<Navigate
+				to={location.state?.from || '/'}
+				replace
+			/>
 		)
 	) : (
-		<Navigate to='/login' state={{ from: location }} replace />
+		<Navigate
+			to='/login'
+			state={{ from: location }}
+			replace
+		/>
 	)
 }
 
@@ -58,14 +66,29 @@ function PrivateRoute({ children }) {
 	const { isAuthenticated } = useAuth()
 	const location = useLocation()
 
-	return isAuthenticated ? children : <Navigate to='/login' state={{ from: location }} replace />
+	return isAuthenticated ? (
+		children
+	) : (
+		<Navigate
+			to='/login'
+			state={{ from: location }}
+			replace
+		/>
+	)
 }
 
 function GuestRoute({ children }) {
 	const { isAuthenticated } = useAuth()
 	const location = useLocation()
 
-	return isAuthenticated ? <Navigate to={location.state?.from || '/dashboard'} replace /> : children
+	return isAuthenticated ? (
+		<Navigate
+			to={location.state?.from || '/dashboard'}
+			replace
+		/>
+	) : (
+		children
+	)
 }
 
 export default function App() {
@@ -74,7 +97,10 @@ export default function App() {
 			<Router>
 				<Layout>
 					<Routes>
-						<Route path='/' element={<Home />} />
+						<Route
+							path='/'
+							element={<Home />}
+						/>
 						<Route
 							path='/login'
 							element={
@@ -95,7 +121,7 @@ export default function App() {
 							path='/request-team-access'
 							element={
 								<PrivateRoute>
-									<RequestTeamAccess />
+									<TeamAccessRequestForm />
 								</PrivateRoute>
 							}
 						/>
@@ -148,6 +174,14 @@ export default function App() {
 							}
 						/>
 						<Route
+							path='/admin-team-management'
+							element={
+								<AdminRoute>
+									<AdminTeamManagement />
+								</AdminRoute>
+							}
+						/>
+						<Route
 							path='/teams-management'
 							element={
 								<AdminRoute>
@@ -171,10 +205,13 @@ export default function App() {
 								</AllocatorRoute>
 							}
 						/>
-						<Route path='*' element={<NotFound />} />
+						<Route
+							path='*'
+							element={<NotFound />}
+						/>
 					</Routes>
 				</Layout>
 			</Router>
 		</AuthProvider>
 	)
-};
+}

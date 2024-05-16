@@ -1,110 +1,125 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { requestVerifyToken } from '../api/authService';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { verifyTokenRequest } from '../api/authService'
+import { handleError } from '../api/config'
 
-const AuthContext = createContext(null);
+const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
-	const [isAuthenticated, setAuthenticated] = useState(false);
-	const [userId, setUserId] = useState(null);
-	const [username, setUsername] = useState('');
-	const [userEmail, setUserEmail] = useState('');
-	const [firstName, setFirstName] = useState('');
-	const [teams, setTeams] = useState([]);
+	const [authState, setAuthState] = useState({
+		isAuthenticated: false,
+		userId: null,
+		username: '',
+		userEmail: '',
+		firstName: '',
+		teams: [],
+		userRoleName: null,
+		userRoleAuthority: 9999,
+		teamId: null,
+	})
 
-	const [userRoleName, setUserRoleName] = useState(null);
-	const [userRoleAuthority, setRoleAuthority] = useState(9999)
-	const [teamId, setTeamId] = useState(null)
+	const changeTeam = useCallback(
+		(teamId) => {
+			const newTeam = authState.teams?.find((team) => team.team_id === Number(teamId))
+			if (newTeam) {
+				const { role_name, role_authority, team_id, approved } = newTeam
+				setAuthState((prevState) => ({
+					...prevState,
+					userRoleName: role_name,
+					userRoleAuthority: approved ? role_authority : 9999,
+					teamId: team_id,
+				}))
+				window.localStorage.setItem('lastSelectedTeamId', team_id)
+			} else if (authState.teams?.length > 0) {
+				const { role_name, role_authority, team_id } = authState.teams[0]
+				setAuthState((prevState) => ({
+					...prevState,
+					userRoleName: role_name,
+					userRoleAuthority: role_authority,
+					teamId: team_id,
+				}))
+			}
+		},
+		[authState.teams]
+	)
 
-	const changeTeam = useCallback((teamId) => {
-		const newTeam = teams.find((team) => team.team_id === Number(teamId));
-		if (newTeam) {
-			const approved = newTeam.approved;
-			console.log(newTeam)
-			setUserRoleName(newTeam.role_name);
-			setRoleAuthority(approved ? newTeam.role_authority : 9999);
-			setTeamId(newTeam.team_id)
-			window.localStorage.setItem('lastSelectedTeamId', teamId);
-		} else if (teams.length > 0) {
-			setUserRoleName(teams[0].role_name);
-			setRoleAuthority(teams[0].role_authority)
-			setTeamId(teams[0].team_id)
+	const login = useCallback(({ token, id, username, email, firstName, teams }) => {
+		if (!id || !username || !email || !firstName || !teams) {
+			console.error('Missing data in login:', { token, id, username, email, firstName, teams })
+			return
 		}
 
-	}, [teams]);
+		window.localStorage.setItem('token', token)
+		const authority = teams?.length > 0 ? teams[0].role_authority : 9999
+		setAuthState((prevState) => ({
+			isAuthenticated: true,
+			userId: id,
+			username,
+			userEmail: email,
+			firstName,
+			teams,
+			userRoleName: teams?.length > 0 ? teams[0].role_name : null,
+			userRoleAuthority: authority,
+			teamId: teams?.length > 0 ? teams[0].team_id : null,
+		}))
 
-	const login = useCallback(
-		({ token, id, username, email, firstName, teams }) => {
-			window.localStorage.setItem('token', token);
-			setAuthenticated(true);
-			setRoleAuthority(5)
-			setUserId(id);
-			setUsername(username);
-			setUserEmail(email);
-			setFirstName(firstName);
-			setTeams(teams);
-
-			const lastTeamId = window.localStorage.getItem('lastSelectedTeamId')
-			if (lastTeamId) {
-				const selectedTeamData = teams.find((team) => team.team_id === Number(lastTeamId))
-				if (selectedTeamData) {
-					setRoleAuthority(selectedTeamData.authority_level)
-				}
+		const lastTeamId = window.localStorage.getItem('lastSelectedTeamId')
+		if (lastTeamId) {
+			const selectedTeamData = teams?.find((team) => team.team_id === Number(lastTeamId))
+			if (selectedTeamData) {
+				setAuthState((prevState) => ({
+					...prevState,
+					userRoleAuthority: selectedTeamData.role_authority,
+				}))
 			}
-		}, []);
+		}
+	}, [])
 
 	const logout = useCallback(() => {
-		window.localStorage.removeItem('token');
-		setAuthenticated(false);
-		setRoleAuthority(9999)
-		setUserId(null);
-		setUsername(null);
-		setUserEmail(null);
-		setFirstName(null);
-		setTeams(null);
-	}, []);
+		window.localStorage.removeItem('token')
+		setAuthState({
+			isAuthenticated: false,
+			userId: null,
+			username: '',
+			userEmail: '',
+			firstName: '',
+			teams: [],
+			userRoleName: null,
+			userRoleAuthority: 9999,
+			teamId: null,
+		})
+	}, [])
 
 	const verifyToken = useCallback(async () => {
 		try {
-			const token = window.localStorage.getItem('token');
-
+			const token = window.localStorage.getItem('token')
 			if (token) {
-				const response = await requestVerifyToken();
-				const { id, username, email, firstName, teams } = response.data.user;
-
-				login({ token, id, username, email, firstName, teams });
+				const response = await verifyTokenRequest({ Authorization: `Bearer ${token}` })
+				const { id, username, email, firstName, teams } = response
+				login({ token, id, username, email, firstName, teams })
 			}
 		} catch (error) {
-			console.error('Token validation failed:', error);
-			logout();
+			handleError(error)
+			logout()
 		}
-	}, [login, logout]);
+	}, [login, logout])
 
 	useEffect(() => {
-		console.log(`useEffect -> authContext`);
-		verifyToken();
-	}, [verifyToken, login, logout]);
+		verifyToken()
+	}, [verifyToken])
 
 	return (
 		<AuthContext.Provider
 			value={{
-				isAuthenticated,
+				...authState,
 				login,
 				logout,
 				changeTeam,
-				userId,
-				teamId,
-				username,
-				userEmail,
-				firstName,
-				teams,
-				setTeams,
-				userRoleName,
-				userRoleAuthority
+				setTeams: (teams) => setAuthState((prevState) => ({ ...prevState, teams })),
 			}}
 		>
 			{children}
 		</AuthContext.Provider>
-	);
-};
+	)
+}
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext)

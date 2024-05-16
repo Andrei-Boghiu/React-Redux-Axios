@@ -1,0 +1,16 @@
+/* I will do it later */
+
+.button-box-details {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	text-align: center;
+	flex-wrap: nowrap;
+}
+
+.button-box-details p {
+	display: inline-block;
+	text-align: center;
+	margin: 0;
+}

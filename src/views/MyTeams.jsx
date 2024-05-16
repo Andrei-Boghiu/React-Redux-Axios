@@ -5,31 +5,29 @@ import Table from '../components/shared/Table'
 import LoadingTable from '../components/Loaders/LoadingTable'
 
 export default function MyTeams() {
-    const [tableRows, setRows] = useState([]);
-    const [loading, setLoading] = useState(false);
+	const [tableRows, setRows] = useState([])
+	const [loading, setLoading] = useState(false)
 
-    const headers = useAuthHeaders();
-    useEffect(() => {
-        setLoading(true)
-        getMyTeams(headers).then(res => {
-            console.log(res)
-            setRows(res.data.teams)
+	const headers = useAuthHeaders()
+	useEffect(() => {
+		setLoading(true)
+		getMyTeams(headers)
+			.then((teams) => {
+				setRows(teams)
+			})
+			.catch((error) => {
+				console.error(error)
+				alert('Error fetching teams data')
+			})
+			.finally(() => {
+				setLoading(false)
+			})
+	}, [headers])
 
-        }).catch(error => {
-            console.error(error);
-            alert('Error fetching teams data');
-        }).finally(() => {
-            setLoading(false)
-        })
-    }, [headers]);
-
-    return (
-        <div>
-            <h3>My Teams</h3>
-            {loading ?
-                <LoadingTable />
-                : <Table rows={tableRows} />
-            }
-        </div>
-    )
+	return (
+		<div>
+			<h3>My Teams</h3>
+			{loading ? <LoadingTable /> : <Table rows={tableRows} />}
+		</div>
+	)
 }
