@@ -1,0 +1,46 @@
+:focus {
+    outline: 2px dashed #4a90e2;
+    outline-offset: 2px;
+}
+
+.issue-on-input {
+    outline: 2px dashed #e24a4a;
+    outline-offset: 2px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.red {
+    color: red;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.small {
+    font-size: small;
+    line-height: 14px;
+    text-wrap: wrap;
+}
+
+.disabled {
+    background-color: gray !important;
+    color: #fff !important;
+    cursor: not-allowed;
+    border: none;
+}

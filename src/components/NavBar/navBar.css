@@ -1,0 +1,90 @@
+.navigation {
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	background-color: #0a152f;
+	color: #fff;
+	margin: 0;
+	padding: 0px 25px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.nav-header {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	text-align: center;
+	gap: 5%;
+}
+
+.nav-title {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	text-align: center;
+	gap: 10px;
+}
+
+.nav-title h2 {
+	color: #fff;
+	font-weight: 900;
+	font-style: italic;
+	font-size: x-large;
+	text-align: center;
+	margin: 10px 0;
+}
+
+.nav-routes {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin: 10px 0;
+}
+
+.nav-account-actions {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-end;
+	margin: 10px 0;
+}
+
+.nav-content {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+	text-align: center;
+}
+
+.nav-info {
+	color: #969696;
+	display: flex;
+	gap: 5px;
+	font-size: 15px;
+	white-space: nowrap;
+}
+
+.nav-info p {
+	margin: 0;
+}
+
+select.nav-team-selector {
+	color: #ffffff;
+	background-color: transparent;
+	text-align: center;
+	padding: 5px 8px;
+	margin: 0 5px;
+	border: 1px solid #ffffff;
+	border-radius: 4px;
+	font-size: 14px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+option.nav-team-option {
+	background-color: #0a152f;
+}

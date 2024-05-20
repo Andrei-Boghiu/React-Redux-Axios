@@ -1,0 +1,157 @@
+/* Global Styles */
+#root {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+body {
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	background-color: #f4f4f4;
+	color: #333;
+	margin: 0;
+	padding: 0;
+	line-height: 1.6;
+	height: 100%;
+}
+
+a {
+	color: #4a90e2;
+	text-decoration: none;
+}
+
+.main-content {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+	flex: 1;
+}
+
+/* Text Elements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #0a152f;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+p,
+ul,
+ol,
+dl,
+blockquote {
+	margin-top: 0;
+	margin-bottom: 20px;
+}
+
+/* Lists */
+ul,
+ol {
+	padding-left: 20px;
+}
+
+li {
+	margin-bottom: 5px;
+}
+
+/* Tables */
+
+/* Forms */
+.form-container {
+	background-color: #ffffff;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	width: 360px;
+	margin: 40px auto;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+textarea,
+select {
+	width: 95%;
+	padding: 8px;
+	margin-bottom: 20px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+select {
+	width: 100% !important;
+}
+
+input[type='file'] {
+	margin: 10px;
+}
+
+.admin-button {
+	background-color: #ffffff;
+	color: #0a152f;
+	border: 1px solid #0a152f;
+	padding: 8px 16px;
+	text-decoration: none;
+	font-size: 14px;
+	border-radius: 4px;
+	transition: background-color 0.2s, color 0.2s;
+	display: inline-block;
+	margin: 0 5px;
+	cursor: pointer;
+}
+
+.admin-button:hover {
+	background-color: #0a152f;
+	color: #ffffff;
+	border-color: #0a152f;
+	text-decoration: none;
+}
+
+.admin-button:active {
+	background-color: #0a152f;
+	color: #ffffff;
+}
+
+.flex-row-gap {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.flex-row-between {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flex-row-evenly {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+.flex-wrap {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+}
+
+.action-box {
+	margin: 30px;
+	width: 400px;
+	background-color: #ffffff;
+	padding: 30px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
