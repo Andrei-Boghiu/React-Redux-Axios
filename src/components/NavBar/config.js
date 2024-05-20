@@ -11,7 +11,7 @@ export const specialTeams = [
 	{
 		teamId: 1930, // Admins Team
 		navigation: [
-			{ btnId: 1, navigateTo: '/admin-team-management', btnName: 'Team Management' },
+			{ btnId: 1, navigateTo: '/admin-team-management', btnName: 'Admin Team Management' },
 			{ btnId: 2, navigateTo: '/teams-management', btnName: 'Teams Management' },
 			{ btnId: 3, navigateTo: '/users-management', btnName: 'Users Management' },
 			{ btnId: 4, navigateTo: '/teams-statistics', btnName: 'Teams Statistics' },

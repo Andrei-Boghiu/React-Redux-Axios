@@ -144,9 +144,9 @@ export default function App() {
 						<Route
 							path='/my-teams'
 							element={
-								<TeamAdminRoute>
+								<PrivateRoute>
 									<MyTeams />
-								</TeamAdminRoute>
+								</PrivateRoute>
 							}
 						/>
 						<Route

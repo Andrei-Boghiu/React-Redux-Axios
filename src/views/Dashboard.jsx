@@ -1,24 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import WorkItemsTable from '../components/shared/WorkItemsTable'
 import { fetchAssignNewItem, getUserWorkItems, updateItemComplete, updateItemUnassign } from '../api/workService'
+import { useAuthHeaders } from '../context/useAuthHeaders';
 
 export default function Dashboard() {
 	const [workItems, setWorkItems] = useState([]);
+	const headers = useAuthHeaders();
+	const [lobbyUpdated, setLobbyUpdated] = useState(false)
 
 	useEffect(() => {
 		console.log(`useEffect -> Dashboard`);
-		updateLobby()
-	}, [])
 
-	const updateLobby = async () => {
+		if (!lobbyUpdated) {
+			updateLobby()
+		}
+	}, [lobbyUpdated])
+
+	const updateLobby = useCallback(async () => {
 		try {
-			const response = await getUserWorkItems()
-			setWorkItems(response.data)
+			const workItems = await getUserWorkItems(headers)
+			setWorkItems(workItems)
 		} catch (error) {
 			console.error('Error fetching work items', error)
-			alert('Error fetching lobby')
+			// alert('Error fetching lobby')
+		} finally {
+			setLobbyUpdated(true)
 		}
-	}
+	}, [headers])
 
 	const handleGetWork = async () => {
 		try {

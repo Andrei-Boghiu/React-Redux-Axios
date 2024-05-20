@@ -10,7 +10,7 @@ import { specialTeams } from './config'
 export const NavBar = () => {
 	const { logout, username, isAuthenticated, teams, teamId, changeTeam, userRoleName } = useAuth()
 	const [selectedTeam, setSelectedTeam] = useState(null)
-	const specialTeam = specialTeams.find((team) => team.teamId === teamId)
+	const specialTeam = specialTeams.find((team) => team.teamId === teamId);
 	const approvedInATeam = teams?.some((team) => team.approved)
 	const navigate = useNavigate()
 
@@ -51,7 +51,7 @@ export const NavBar = () => {
 				</div>
 				<div className='nav-routes'>
 					<NavButton to='/'>Home</NavButton>
-					{teams?.length > 0 &&
+					{teams?.length > 0 && approvedInATeam &&
 						(specialTeam ? (
 							specialTeam.navigation.map((navBtn) => (
 								<NavButton

@@ -109,7 +109,7 @@ export default function Home() {
 					<h3>Need to Create a Team?</h3>
 					<p>Create your own team space, invite members, and start managing your work items.</p>
 					{isAuthenticated ? (
-						teams?.length > 0 && userRoleAuthority <= 3 ? (
+						teams?.some(team => team.approved) && userRoleAuthority <= 3 ? (
 							<Link
 								className='btn-primary'
 								to='/create-new-team'
@@ -129,7 +129,7 @@ export default function Home() {
 					)}
 				</div>
 
-				{isAuthenticated && teams.length > 0 && (
+				{isAuthenticated && teams?.length > 0 && (
 					<div className='action-box'>
 						<h3>Need Details About A Team?</h3>
 						<p>See more details about the teams you are a member of by going to the 'My Teams' page.</p>

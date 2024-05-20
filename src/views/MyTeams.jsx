@@ -27,7 +27,12 @@ export default function MyTeams() {
 	return (
 		<div>
 			<h3>My Teams</h3>
-			{loading ? <LoadingTable /> : <Table rows={tableRows} />}
+			{loading ?
+				<LoadingTable />
+				: <>
+					{tableRows?.length > 0 ? <Table rows={tableRows} /> : <p>You are not a member in any team...</p>}
+				</>
+			}
 		</div>
 	)
 }
