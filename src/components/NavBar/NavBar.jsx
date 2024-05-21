@@ -72,7 +72,7 @@ export const NavBar = () => {
 					<div className='nav-content'>
 						<div className='nav-info'>
 							<p>{username}</p>
-							{selectedTeam && <p>{`(${userRoleName})`}</p>}
+							{selectedTeam && userRoleName && <p>{`(${userRoleName})`}</p>}
 						</div>
 						{approvedInATeam ? (
 							teams?.length === 1 ? (

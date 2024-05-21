@@ -21,15 +21,16 @@ export default function Home() {
 			const awaitingApprovalTeams = teams.filter((team) => !team.approved)
 			setAwaitingApprovalTeams(awaitingApprovalTeams)
 		}
-	}, [teams])
+	}, [])
 
 	useEffect(() => {
 		const fetchTeams = async () => {
 			if (awaitingApprovalTeams.length > 0 && !checkTeamsCalled) {
 				setCheckTeamsCalled(true)
 				try {
-					const teams = await checkUserTeams(headers)
-					setTeams(teams)
+					const teams = await checkUserTeams(headers);
+					setTeams(teams);
+					console.log(teams)
 					// ! Make a call to also check if there are any awaiting approval for new team requests
 				} catch (error) {
 					console.error('Error while updating the teams:', error)
@@ -39,7 +40,7 @@ export default function Home() {
 		}
 
 		fetchTeams()
-	}, [awaitingApprovalTeams, checkTeamsCalled, headers, setTeams])
+	}, [])
 
 	const day = new Date().getDay()
 	const randomFunnyMessage = brand.welcome_back_message[day]

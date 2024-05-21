@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { verifyTokenRequest } from '../api/authService'
 import { handleError } from '../api/config'
 
-const AuthContext = createContext(null)
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
 	const [authState, setAuthState] = useState({
