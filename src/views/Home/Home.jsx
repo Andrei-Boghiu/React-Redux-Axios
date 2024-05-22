@@ -1,55 +1,14 @@
-import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/useAuth'
 import brand from '../../brand.json'
 import { Link } from 'react-router-dom'
-import { checkUserTeams } from '../../api/teamsService'
-import { useAuthHeaders } from '../../context/useAuthHeaders'
-import Table from '../../components/shared/Table'
-import cloneObjKeys from '../../utils/cloneObjKeys'
+
 import './Home.css'
 
 export default function Home() {
-	const { isAuthenticated, firstName, userRoleAuthority, teams, setTeams } = useAuth()
-	const headers = useAuthHeaders()
-	const [awaitingApprovalTeams, setAwaitingApprovalTeams] = useState([])
-	const [checkTeamsCalled, setCheckTeamsCalled] = useState(false)
-
-	const keysToKeep = ['id', 'team_name', 'team_description', 'role_name', 'team_owned_by']
-
-	useEffect(() => {
-		if (teams) {
-			const awaitingApprovalTeams = teams.filter((team) => !team.approved)
-			setAwaitingApprovalTeams(awaitingApprovalTeams)
-		}
-	}, [teams])
-
-	useEffect(() => {
-		const fetchTeams = async () => {
-			if (awaitingApprovalTeams.length > 0 && !checkTeamsCalled) {
-				setCheckTeamsCalled(true)
-				try {
-					const teams = await checkUserTeams(headers);
-					setTeams(teams);
-					console.log(teams)
-					// ! Make a call to also check if there are any awaiting approval for new team requests
-				} catch (error) {
-					console.error('Error while updating the teams:', error)
-					alert('Error while updating the teams...')
-				}
-			}
-		}
-
-		fetchTeams()
-	}, [setTeams, headers, awaitingApprovalTeams.length, checkTeamsCalled])
+	const { isAuthenticated, firstName, userRoleAuthority, teams } = useAuth()
 
 	const day = new Date().getDay()
 	const randomFunnyMessage = brand.welcome_back_message[day]
-
-	const awaitingApprovalTeamsData = cloneObjKeys({
-		originalData: awaitingApprovalTeams,
-		keysToKeep,
-		consoleLogSteps: false,
-	})
 
 	return (
 		<div>
@@ -141,18 +100,8 @@ export default function Home() {
 							>
 								My Teams
 							</Link>
-							<p>Waiting approval for 2 teams</p>
 						</div>
-						{/* // * Here Add info of how many approvals the user is awaiting for and so on*/}
 					</div>
-				)}
-
-				{awaitingApprovalTeams.length > 0 && (
-					// ! Deprecate this table, instead use the table from /my-teams
-					<Table
-						rows={awaitingApprovalTeamsData}
-						title={'Awaiting Approval'}
-					/>
 				)}
 			</div>
 		</div>

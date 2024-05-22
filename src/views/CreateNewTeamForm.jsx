@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthHeaders } from '../context/useAuthHeaders'
-import { requestCreateNewTeam } from '../api/teamsService'
+import { requestCreateNewTeam, getUpdatedTeamsInfo } from '../api/teamsService'
 import { useAuth } from '../context/useAuth'
 
 export default function CreateNewTeam() {
 	const navigate = useNavigate()
 	const headers = useAuthHeaders()
-	const { userEmail } = useAuth()
+	const { userEmail, setTeams } = useAuth()
 
 	const [teamName, setTeamName] = useState('')
 	const [teamDescription, setTeamDescription] = useState('')
@@ -26,7 +26,10 @@ export default function CreateNewTeam() {
 				alert('Request to create a new team sent successfully!')
 			}
 
-			navigate('/')
+			const updatedTeams = await getUpdatedTeamsInfo(headers);
+			setTeams(updatedTeams);
+
+			navigate('/');
 		} catch (error) {
 			console.error('Error creating new team:', error)
 			alert('There was an error...')

@@ -1,33 +1,67 @@
+import { useEffect, useState } from 'react';
+import ExcelJS from 'exceljs';
 // import  { useState } from 'react'
 // import * as XLSX from 'xlsx'
 // import { insertWorkItems } from '../api/workService'
 
 export default function WorkItemsManagement() {
+	const [file, setFile] = useState(null);
+
 	// const [file, setFile] = useState(null)
 	// const requiredHeaders = ['title', 'description', 'team_id']
 	// const templateHeaders = ['aux_id', 'title', 'description', 'team_id']
 
-	const handleFileChange = () => {
-		// setFile(event.target.files[0])
+	const handleFileChange = (e) => {
+		setFile(e.target.files[0])
 	}
 
-	const handleFileUpload = () => {
-		alert('needs setup')
-		// if (!file) {
-		// 	alert('Please select a file first!')
-		// 	return
-		// }
-		// const reader = new FileReader()
-		// reader.onload = (e) => {
-		// 	const data = new Uint8Array(e.target.result)
-		// 	const workbook = XLSX.read(data, { type: 'array' })
-		// 	const sheetName = workbook.SheetNames[0]
-		// 	const worksheet = workbook.Sheets[sheetName]
-		// 	const json = XLSX.utils.sheet_to_json(worksheet)
-		// 	verifyAndUploadData(json)
-		// }
-		// reader.readAsArrayBuffer(file)
-	}
+
+	const handleFileUpload = async () => {
+		if (file) {
+			const workbook = new ExcelJS.Workbook();
+			const reader = new FileReader();
+
+			reader.onload = async (event) => {
+				const buffer = event.target.result;
+				await workbook.xlsx.load(buffer);
+
+				const worksheet = workbook.getWorksheet(1);
+				const jsonData = [];
+
+				worksheet.eachRow((row, rowNumber) => {
+					const rowValues = row.values;
+
+					if (rowValues.length > 0 && rowValues[0] === null) {
+						rowValues.shift()
+					}
+
+					jsonData.push(rowValues);
+				});
+				console.log(JSON.stringify(jsonData, null, 2))
+
+			}
+
+			reader.readAsArrayBuffer(file)
+		}
+	};
+
+	// const handleFileUpload = () => {
+	// 	alert('needs setup')
+	// 	// if (!file) {
+	// 	// 	alert('Please select a file first!')
+	// 	// 	return
+	// 	// }
+	// 	// const reader = new FileReader()
+	// 	// reader.onload = (e) => {
+	// 	// 	const data = new Uint8Array(e.target.result)
+	// 	// 	const workbook = XLSX.read(data, { type: 'array' })
+	// 	// 	const sheetName = workbook.SheetNames[0]
+	// 	// 	const worksheet = workbook.Sheets[sheetName]
+	// 	// 	const json = XLSX.utils.sheet_to_json(worksheet)
+	// 	// 	verifyAndUploadData(json)
+	// 	// }
+	// 	// reader.readAsArrayBuffer(file)
+	// }
 
 	// const verifyAndUploadData = async (data) => {
 	// 	try {
@@ -59,6 +93,9 @@ export default function WorkItemsManagement() {
 	// 	}
 	// }
 
+
+	// WorkItemsManagement 
+
 	const downloadTemplate = () => {
 		alert('needs setup')
 		// const wb = XLSX.utils.book_new()
@@ -76,6 +113,7 @@ export default function WorkItemsManagement() {
 				<p>
 					Add new work items to allocation. Duplicates of <code>aux_id</code> will not be allowed
 				</p>
+
 				<input
 					type='file'
 					id='file-input'
@@ -129,11 +167,12 @@ export default function WorkItemsManagement() {
 					type='file'
 					id='file-input'
 					onChange={handleFileChange}
+					disabled={true}
 				/>
 
 				<div className='flex-row-gap'>
-					<button onClick={handleFileUpload}>Upload Data</button>
-					<button onClick={downloadTemplate}>Download Template</button>
+					<button disabled={true} onClick={handleFileUpload}>Upload Data</button>
+					<button disabled={true} onClick={downloadTemplate}>Download Template</button>
 				</div>
 
 				{/* Components or sections for adding, modifying, deleting work items */}

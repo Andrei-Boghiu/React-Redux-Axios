@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react'
-import { getMyTeams } from '../api/teamsService'
+import { getMyTeams, getUpdatedTeamsInfo } from '../api/teamsService'
 import { useAuthHeaders } from '../context/useAuthHeaders'
 import Table from '../components/shared/Table'
-import LoadingTable from '../components/Loaders/LoadingTable'
+import Spinner from '../components/Loaders/Spinner'
+import { useAuth } from '../context/useAuth'
 
 export default function MyTeams() {
-	const [tableRows, setRows] = useState([])
+	const [membershipsTable, setMemberships] = useState([])
+	const [teamsTable, setTeams] = useState([])
 	const [loading, setLoading] = useState(false)
+	const [teamsUpdated, setTeamsUpdated] = useState(false)
+	const { setTeams: updateTeams } = useAuth()
 
-	const headers = useAuthHeaders()
+	const headers = useAuthHeaders();
+
 	useEffect(() => {
 		setLoading(true)
+
 		getMyTeams(headers)
-			.then((teams) => {
-				setRows(teams)
+			.then((res) => {
+				setMemberships(res?.memberships)
+				setTeams(res?.teams)
 			})
 			.catch((error) => {
 				console.error(error)
@@ -21,18 +28,28 @@ export default function MyTeams() {
 			})
 			.finally(() => {
 				setLoading(false)
-			})
+			});
+
 	}, [headers])
 
+	useEffect(() => {
+		if (!teamsUpdated) {
+			getUpdatedTeamsInfo(headers)
+				.then(teams => updateTeams(teams))
+				.catch(err => console.error(`Error updating user teams`, err))
+				.finally(() => setTeamsUpdated(true))
+		}
+	}, [headers, updateTeams, teamsUpdated])
+
 	return (
-		<div>
-			<h3>My Teams</h3>
+		<>
 			{loading ?
-				<LoadingTable />
+				<Spinner />
 				: <>
-					{tableRows?.length > 0 ? <Table rows={tableRows} /> : <p>You are not a member in any team...</p>}
+					{membershipsTable?.length > 0 ? <Table rows={membershipsTable} title="Memberships" /> : <p>You are not a member in any team...</p>}
+					{teamsTable?.length > 0 && <Table rows={teamsTable} title="Teams Awaiting Approval" />}
 				</>
 			}
-		</div>
+		</>
 	)
 }

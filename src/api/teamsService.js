@@ -28,6 +28,10 @@ export const getMyTeam = async (headers, teamId) => {
 	return await post(`${API_BASE_URL}/api/teams/my-team`, { teamId }, headers)
 }
 
+export const getUpdatedTeamsInfo = async (headers) => {
+	return await get(`${API_BASE_URL}/api/teams/updated-teams-info`, headers)
+}
+
 export const getAdminsMembers = async (headers) => {
 	return await get(`${API_BASE_URL}/api/teams/admin-members`, headers)
 }

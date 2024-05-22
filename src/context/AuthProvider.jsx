@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
-import {  useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import AuthContext from './AuthContext';
 import { verifyTokenRequest } from '../api/authService'
 import { handleError } from '../api/config'
 // import { useAuth } from './useAuth';
-
 
 export const AuthProvider = ({ children }) => {
 	const [authState, setAuthState] = useState({
