@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types';
 import { useLocation, Link } from 'react-router-dom'
 import '../../assets/buttons.css'
 
@@ -13,5 +13,10 @@ const NavButton = ({ to, children }) => {
 		</Link>
 	)
 }
+
+NavButton.propTypes = {
+	children: PropTypes.node.isRequired,
+	to: PropTypes.string.isRequired
+};
 
 export default NavButton

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../../context/useAuth'
 import { Link, useNavigate } from 'react-router-dom'
 import './navBar.css'
 import brand from '../../brand.json'

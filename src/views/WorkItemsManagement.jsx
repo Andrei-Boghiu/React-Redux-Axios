@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
+// import  { useState } from 'react'
 // import * as XLSX from 'xlsx'
-import { insertWorkItems } from '../api/workService'
+// import { insertWorkItems } from '../api/workService'
 
 export default function WorkItemsManagement() {
-	const [file, setFile] = useState(null)
-	const requiredHeaders = ['title', 'description', 'team_id']
-	const templateHeaders = ['aux_id', 'title', 'description', 'team_id']
+	// const [file, setFile] = useState(null)
+	// const requiredHeaders = ['title', 'description', 'team_id']
+	// const templateHeaders = ['aux_id', 'title', 'description', 'team_id']
 
-	const handleFileChange = (event) => {
-		setFile(event.target.files[0])
+	const handleFileChange = () => {
+		// setFile(event.target.files[0])
 	}
 
 	const handleFileUpload = () => {
@@ -29,35 +29,35 @@ export default function WorkItemsManagement() {
 		// reader.readAsArrayBuffer(file)
 	}
 
-	const verifyAndUploadData = async (data) => {
-		try {
-			if (data.length === 0) {
-				alert('The file is empty.')
-				return
-			}
+	// const verifyAndUploadData = async (data) => {
+	// 	try {
+	// 		if (data.length === 0) {
+	// 			alert('The file is empty.')
+	// 			return
+	// 		}
 
-			const dataHeaders = Object.keys(data[0])
-			const areRequiredHeadersPresent = requiredHeaders.every((header) => dataHeaders.includes(header))
+	// 		const dataHeaders = Object.keys(data[0])
+	// 		const areRequiredHeadersPresent = requiredHeaders.every((header) => dataHeaders.includes(header))
 
-			if (!areRequiredHeadersPresent) {
-				alert('The file does not contain the necessary headers. Please check the file and try again.')
-				return
-			}
+	// 		if (!areRequiredHeadersPresent) {
+	// 			alert('The file does not contain the necessary headers. Please check the file and try again.')
+	// 			return
+	// 		}
 
-			await insertWorkItems(data)
-			alert('Data uploaded successfully!')
-		} catch (error) {
-			console.error('Failed to upload data:')
-			console.error(error)
-			const errMessage = error?.response?.data?.message
-			const errDetails = error?.response?.data?.error?.detail
-			if (errMessage && errDetails) {
-				alert(`${errMessage}: ${errDetails}`)
-			} else {
-				alert('Error uploading data: unknown error')
-			}
-		}
-	}
+	// 		await insertWorkItems(data)
+	// 		alert('Data uploaded successfully!')
+	// 	} catch (error) {
+	// 		console.error('Failed to upload data:')
+	// 		console.error(error)
+	// 		const errMessage = error?.response?.data?.message
+	// 		const errDetails = error?.response?.data?.error?.detail
+	// 		if (errMessage && errDetails) {
+	// 			alert(`${errMessage}: ${errDetails}`)
+	// 		} else {
+	// 			alert('Error uploading data: unknown error')
+	// 		}
+	// 	}
+	// }
 
 	const downloadTemplate = () => {
 		alert('needs setup')
@@ -93,7 +93,7 @@ export default function WorkItemsManagement() {
 			<div className='action-box'>
 				<h3>Update Work Items</h3>
 				<p>
-					Use the <code>aux_id</code> column to update existing work items from allocation. If the <code>aux_id</code> isn't found, it will
+					Use the <code>aux_id</code> column to update existing work items from allocation. If the <code>aux_id</code> isn&apos;t found, it will
 					skip it.
 				</p>
 
@@ -121,7 +121,7 @@ export default function WorkItemsManagement() {
 			<div className='action-box'>
 				<h3>Upload & Update Work Items</h3>
 				<p>
-					Instances of <code>aux_id</code> that are already in the allocation will be updated if the <code>status</code> isn't 'WIP', and
+					Instances of <code>aux_id</code> that are already in the allocation will be updated if the <code>status</code> isn&apos;t &apos;WIP&apos;, and
 					new ones will be added.
 				</p>
 
@@ -142,7 +142,7 @@ export default function WorkItemsManagement() {
 			<div className='action-box'>
 				<h3>Remove Work Items</h3>
 				<p>
-					Use the <code>aux_id</code> column to tag cases with the 'Removed' status in order to be excluded from allocation unless updated
+					Use the <code>aux_id</code> column to tag cases with the &apos;Removed&apos; status in order to be excluded from allocation unless updated
 					later on.
 				</p>
 
@@ -171,7 +171,7 @@ export default function WorkItemsManagement() {
 				<h3>Adhoc Work Items</h3>
 				<p>
 					Insert adhoc tasks into the database, having the possibility to pre-assign the tasks to a specific user. Suitable for daily tasks
-					as 'Write an email to shareholders' or 'Deep dive on database issue'.
+					as &apos;Write an email to shareholders&apos; or &apos;Deep dive on database issue&apos;.
 				</p>
 
 				<input

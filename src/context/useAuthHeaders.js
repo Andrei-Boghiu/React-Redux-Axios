@@ -1,4 +1,4 @@
-import { useAuth } from './AuthContext'
+import { useAuth } from './useAuth'
 import { useMemo } from 'react'
 
 export const useAuthHeaders = () => {

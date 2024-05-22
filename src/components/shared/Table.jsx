@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types';
 
 export default function Table({ rows, actions = [], title = null }) {
 	if (!rows || rows.length === 0) return null
@@ -26,10 +26,10 @@ export default function Table({ rows, actions = [], title = null }) {
 										? 'True'
 										: 'False'
 									: value === null
-									? '[ Null ]'
-									: typeof value === 'object'
-									? JSON.stringify(value)
-									: value}
+										? '[ Null ]'
+										: typeof value === 'object'
+											? JSON.stringify(value)
+											: value}
 							</td>
 						))}
 						{areActions && (
@@ -47,4 +47,10 @@ export default function Table({ rows, actions = [], title = null }) {
 			</tbody>
 		</table>
 	)
+}
+
+Table.propTypes = {
+	rows: PropTypes.array.isRequired,
+	actions: PropTypes.array,
+	title: PropTypes.string
 }

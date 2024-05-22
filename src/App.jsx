@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Login from './views/Login/Login'
 import Register from './views/Register/Register'
@@ -14,7 +14,8 @@ import WorkItemsManagement from './views/WorkItemsManagement'
 import TeamStatistics from './views/Statistics/TeamStatistics'
 import TeamsStatistics from './views/Statistics/TeamsStatistics'
 import NotFound from './views/NotFound'
-import { AuthProvider, useAuth } from './context/AuthContext'
+import { AuthProvider } from './context/AuthProvider'
+import { useAuth } from './context/useAuth'
 import Layout from './Layout'
 import './App.css'
 import './assets/buttons.css'
@@ -45,6 +46,11 @@ function RoleRouteModel({ children, authorityLevel }) {
 		/>
 	)
 }
+
+RoleRouteModel.propTypes = {
+	children: PropTypes.node.isRequired,
+	authorityLevel: PropTypes.number.isRequired,
+};
 
 function TeamMemberRoute({ children }) {
 	return RoleRouteModel({ children, authorityLevel: 5 })
@@ -77,6 +83,11 @@ function PrivateRoute({ children }) {
 	)
 }
 
+PrivateRoute.propTypes = {
+	children: PropTypes.node.isRequired,
+};
+
+
 function GuestRoute({ children }) {
 	const { isAuthenticated } = useAuth()
 	const location = useLocation()
@@ -90,6 +101,10 @@ function GuestRoute({ children }) {
 		children
 	)
 }
+
+GuestRoute.propTypes = {
+	children: PropTypes.node.isRequired,
+};
 
 export default function App() {
 	return (

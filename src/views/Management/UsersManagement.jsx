@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getAllUsers } from '../../api/userService'
 import { useAuthHeaders } from '../../context/useAuthHeaders'
 import Table from '../../components/shared/Table'

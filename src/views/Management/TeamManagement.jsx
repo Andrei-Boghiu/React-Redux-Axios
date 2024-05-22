@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import PropTypes from 'prop-types';
+import { useCallback, useEffect, useState } from 'react'
 import { approveNewMember, getMyTeam } from '../../api/teamsService'
 import { useAuthHeaders } from '../../context/useAuthHeaders'
 import Table from '../../components/shared/Table'
 import LoadingTable from '../../components/Loaders/LoadingTable'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
 
 export default function TeamManagement() {
 	const headers = useAuthHeaders()
@@ -65,6 +66,10 @@ export default function TeamManagement() {
 				{btnLoading ? 'Loading' : 'Approve'}
 			</button>
 		)
+	}
+
+	ApproveMember.propTypes = {
+		rowData: PropTypes.object.isRequired
 	}
 
 	useEffect(() => {

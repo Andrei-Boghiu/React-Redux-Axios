@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
 import { loginRequest } from '../../api/authService'
 import './Login.css'
 
@@ -103,7 +103,7 @@ export default function Login() {
 						className='btn-link-small'
 						to='/register'
 					>
-						Don't have an account?
+						Don&apos;t have an account?
 					</Link>
 				</div>
 			</form>

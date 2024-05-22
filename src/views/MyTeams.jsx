@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getMyTeams } from '../api/teamsService'
 import { useAuthHeaders } from '../context/useAuthHeaders'
 import Table from '../components/shared/Table'

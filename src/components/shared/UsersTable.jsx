@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types';
 import '../../assets/tables.css'
 
 const UsersTable = ({ userList, handleApprove }) => {
@@ -32,5 +32,10 @@ const UsersTable = ({ userList, handleApprove }) => {
         </table>
     )
 }
+
+UsersTable.propTypes = {
+    userList: PropTypes.array.isRequired,
+    handleApprove: PropTypes.func.isRequired,
+};
 
 export default UsersTable

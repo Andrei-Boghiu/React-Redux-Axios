@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import PropTypes from 'prop-types';
+import { useCallback, useEffect, useState } from 'react'
 import { approveNewTeam, getAllTeams } from '../../api/teamsService'
 import { useAuthHeaders } from '../../context/useAuthHeaders'
 import LoadingTable from '../../components/Loaders/LoadingTable'
@@ -66,6 +67,10 @@ export default function TeamsManagement() {
 				{btnLoading ? 'Loading' : 'Approve'}
 			</button>
 		)
+	}
+
+	ApproveTeam.propTypes = {
+		rowData: PropTypes.object.isRequired
 	}
 
 	useEffect(() => {

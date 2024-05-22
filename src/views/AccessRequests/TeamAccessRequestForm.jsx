@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthHeaders } from '../../context/useAuthHeaders'
 import { fetchAvailableTeamsToJoin, requestTeamAccess } from '../../api/teamsService'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/useAuth'
 
 const TeamAccessRequestForm = () => {
 	const navigate = useNavigate()

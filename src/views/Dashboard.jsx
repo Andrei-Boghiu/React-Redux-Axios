@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import WorkItemsTable from '../components/shared/WorkItemsTable'
 import { fetchAssignNewItem, getUserWorkItems, updateItemComplete, updateItemUnassign } from '../api/workService'
 import { useAuthHeaders } from '../context/useAuthHeaders';
@@ -7,14 +7,6 @@ export default function Dashboard() {
 	const [workItems, setWorkItems] = useState([]);
 	const headers = useAuthHeaders();
 	const [lobbyUpdated, setLobbyUpdated] = useState(false)
-
-	useEffect(() => {
-		console.log(`useEffect -> Dashboard`);
-
-		if (!lobbyUpdated) {
-			updateLobby()
-		}
-	}, [lobbyUpdated])
 
 	const updateLobby = useCallback(async () => {
 		try {
@@ -27,6 +19,14 @@ export default function Dashboard() {
 			setLobbyUpdated(true)
 		}
 	}, [headers])
+
+	useEffect(() => {
+		console.log(`useEffect -> Dashboard`);
+
+		if (!lobbyUpdated) {
+			updateLobby()
+		}
+	}, [updateLobby, lobbyUpdated])
 
 	const handleGetWork = async () => {
 		try {

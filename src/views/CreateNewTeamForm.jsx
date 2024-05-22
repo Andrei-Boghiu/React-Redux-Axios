@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthHeaders } from '../context/useAuthHeaders'
 import { requestCreateNewTeam } from '../api/teamsService'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 
 export default function CreateNewTeam() {
 	const navigate = useNavigate()

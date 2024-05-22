@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types';
 import '../../assets/tables.css'
 
 const WorkItemsTable = ({ workItems, handleComplete, handleUnassigned }) => {
@@ -34,6 +34,12 @@ const WorkItemsTable = ({ workItems, handleComplete, handleUnassigned }) => {
 			</tbody>
 		</table>
 	)
+}
+
+WorkItemsTable.propTypes = {
+	workItems: PropTypes.array.isRequired,
+	handleComplete: PropTypes.func.isRequired,
+	handleUnassigned: PropTypes.func.isRequired
 }
 
 export default WorkItemsTable

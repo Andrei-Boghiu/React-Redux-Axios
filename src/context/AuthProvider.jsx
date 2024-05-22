@@ -1,8 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import PropTypes from 'prop-types';
+import {  useState, useEffect, useCallback } from 'react'
+import AuthContext from './AuthContext';
 import { verifyTokenRequest } from '../api/authService'
 import { handleError } from '../api/config'
+// import { useAuth } from './useAuth';
 
-const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
 	const [authState, setAuthState] = useState({
@@ -50,7 +52,7 @@ export const AuthProvider = ({ children }) => {
 
 		window.localStorage.setItem('token', token)
 		const authority = teams?.length > 0 ? teams[0].role_authority : 9999
-		setAuthState((prevState) => ({
+		setAuthState(() => ({
 			isAuthenticated: true,
 			userId: id,
 			username,
@@ -122,4 +124,6 @@ export const AuthProvider = ({ children }) => {
 	)
 }
 
-export const useAuth = () => useContext(AuthContext)
+AuthProvider.propTypes = {
+	children: PropTypes.node.isRequired,
+};

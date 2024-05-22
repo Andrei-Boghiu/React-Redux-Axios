@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../../context/useAuth'
 import brand from '../../brand.json'
 import { Link } from 'react-router-dom'
 import { checkUserTeams } from '../../api/teamsService'
@@ -21,7 +21,7 @@ export default function Home() {
 			const awaitingApprovalTeams = teams.filter((team) => !team.approved)
 			setAwaitingApprovalTeams(awaitingApprovalTeams)
 		}
-	}, [])
+	}, [teams])
 
 	useEffect(() => {
 		const fetchTeams = async () => {
@@ -40,7 +40,7 @@ export default function Home() {
 		}
 
 		fetchTeams()
-	}, [])
+	}, [setTeams, headers, awaitingApprovalTeams.length, checkTeamsCalled])
 
 	const day = new Date().getDay()
 	const randomFunnyMessage = brand.welcome_back_message[day]
@@ -133,7 +133,7 @@ export default function Home() {
 				{isAuthenticated && teams?.length > 0 && (
 					<div className='action-box'>
 						<h3>Need Details About A Team?</h3>
-						<p>See more details about the teams you are a member of by going to the 'My Teams' page.</p>
+						<p>See more details about the teams you are a member of by going to the &apos;My Teams&apos; page.</p>
 						<div className='button-box-details'>
 							<Link
 								className='btn-primary'
