@@ -1,248 +1,86 @@
-import { useEffect, useState } from 'react';
-import ExcelJS from 'exceljs';
-// import  { useState } from 'react'
-// import * as XLSX from 'xlsx'
-// import { insertWorkItems } from '../api/workService'
+import ManageWorkItemsBox from '../../components/ManageWorkItemsBox/ManageWorkItemsBox';
+import { insertWorkItems } from '../../api/workService';
 
 export default function WorkItemsManagement() {
-	const [file, setFile] = useState(null);
 
-	// const [file, setFile] = useState(null)
-	// const requiredHeaders = ['title', 'description', 'team_id']
-	// const templateHeaders = ['aux_id', 'title', 'description', 'team_id']
-
-	const handleFileChange = (e) => {
-		setFile(e.target.files[0])
+	const dummyFunc = (headers, data) => {
+		console.log(headers, data)
 	}
 
+	const options = [
+		{
+			id: 1,
+			title: "Upload Work Items",
+			description: "Add new work items to allocation. Duplicates of `aux_id` will not be allowed",
+			sendDataApi: insertWorkItems,
+			requiredHeaders: ["aux_id", "aux_tool", "aux_subject", "priority",],
+			allHeaders: ["aux_id", "priority"],
+			disabled: false
+		},
+		{
+			id: 2,
+			title: "Update Work Items",
+			description: "Use the `aux_id` column to update existing work items from allocation. If the `aux_id` isn&apos;t found, it will skip it.",
+			sendDataApi: insertWorkItems,
+			requiredHeaders: ["aux_id", "priority"],
+			allHeaders: ["aux_id", "priority"],
+			disabled: false
+		},
+		{
+			id: 3,
+			title: "Upload & Update Work Items",
+			description: "Instances of &apos;aux_id&apos; already present in the allocation will be updated, and new ones will be added.",
+			sendDataApi: insertWorkItems,
+			requiredHeaders: ["aux_id", "priority"],
+			allHeaders: ["aux_id", "priority"],
+			disabled: false
+		},
+		{
+			id: 4,
+			title: "Remove Work Items",
+			description: "	Use the &apos;aux_id&apos; column to tag cases with the &apos;Removed&apos; status in order to be excluded from allocation unless updated later on.",
+			sendDataApi: dummyFunc,
+			requiredHeaders: ["aux_id", "priority"],
+			allHeaders: ["aux_id", "priority"],
+			disabled: true
+		},
+		{
+			id: 5,
+			title: "Adhoc Work Items",
+			description: "",
+			sendDataApi: dummyFunc,
+			requiredHeaders: ["aux_id", "priority"],
+			allHeaders: ["aux_id", "priority"],
+			disabled: true
+		},
+		{
+			id: 6,
+			title: "Delete All Items from Team team_nr",
+			description: "This will all the data from the team database! Will require admin approval!",
+			sendDataApi: insertWorkItems,
+			requiredHeaders: ["aux_id", "priority"],
+			allHeaders: ["aux_id", "priority"],
+			disabled: true
+		},
+	]
 
-	const handleFileUpload = async () => {
-		if (file) {
-			const workbook = new ExcelJS.Workbook();
-			const reader = new FileReader();
-
-			reader.onload = async (event) => {
-				const buffer = event.target.result;
-				await workbook.xlsx.load(buffer);
-
-				const worksheet = workbook.getWorksheet(1);
-				const jsonData = [];
-
-				worksheet.eachRow((row, rowNumber) => {
-					const rowValues = row.values;
-
-					if (rowValues.length > 0 && rowValues[0] === null) {
-						rowValues.shift()
-					}
-
-					jsonData.push(rowValues);
-				});
-				console.log(JSON.stringify(jsonData, null, 2))
-
-			}
-
-			reader.readAsArrayBuffer(file)
-		}
-	};
-
-	// const handleFileUpload = () => {
-	// 	alert('needs setup')
-	// 	// if (!file) {
-	// 	// 	alert('Please select a file first!')
-	// 	// 	return
-	// 	// }
-	// 	// const reader = new FileReader()
-	// 	// reader.onload = (e) => {
-	// 	// 	const data = new Uint8Array(e.target.result)
-	// 	// 	const workbook = XLSX.read(data, { type: 'array' })
-	// 	// 	const sheetName = workbook.SheetNames[0]
-	// 	// 	const worksheet = workbook.Sheets[sheetName]
-	// 	// 	const json = XLSX.utils.sheet_to_json(worksheet)
-	// 	// 	verifyAndUploadData(json)
-	// 	// }
-	// 	// reader.readAsArrayBuffer(file)
-	// }
-
-	// const verifyAndUploadData = async (data) => {
-	// 	try {
-	// 		if (data.length === 0) {
-	// 			alert('The file is empty.')
-	// 			return
-	// 		}
-
-	// 		const dataHeaders = Object.keys(data[0])
-	// 		const areRequiredHeadersPresent = requiredHeaders.every((header) => dataHeaders.includes(header))
-
-	// 		if (!areRequiredHeadersPresent) {
-	// 			alert('The file does not contain the necessary headers. Please check the file and try again.')
-	// 			return
-	// 		}
-
-	// 		await insertWorkItems(data)
-	// 		alert('Data uploaded successfully!')
-	// 	} catch (error) {
-	// 		console.error('Failed to upload data:')
-	// 		console.error(error)
-	// 		const errMessage = error?.response?.data?.message
-	// 		const errDetails = error?.response?.data?.error?.detail
-	// 		if (errMessage && errDetails) {
-	// 			alert(`${errMessage}: ${errDetails}`)
-	// 		} else {
-	// 			alert('Error uploading data: unknown error')
-	// 		}
-	// 	}
-	// }
-
-
-	// WorkItemsManagement 
-
-	const downloadTemplate = () => {
-		alert('needs setup')
-		// const wb = XLSX.utils.book_new()
-		// const ws_name = 'Template'
-		// const data = [templateHeaders]
-		// const ws = XLSX.utils.aoa_to_sheet(data)
-		// XLSX.utils.book_append_sheet(wb, ws, ws_name)
-		// XLSX.writeFile(wb, 'Template.xlsx')
-	}
 
 	return (
 		<div className='flex-wrap'>
-			<div className='action-box'>
-				<h3>Upload Work Items</h3>
-				<p>
-					Add new work items to allocation. Duplicates of <code>aux_id</code> will not be allowed
-				</p>
+			{/* Components or sections for adding, modifying, deleting work items */}
+			{/* Components or sections for viewing statistics about work items */}
 
-				<input
-					type='file'
-					id='file-input'
-					onChange={handleFileChange}
-				/>
+			{
+				options.map(option =>
+					<ManageWorkItemsBox
+						key={option.id}
+						sendDataApi={option.sendDataApi}
+						title={option.title}
+						description={option.description}
+						disabled={option.disabled} />
+				)
+			}
 
-				<div className='flex-row-gap'>
-					<button onClick={handleFileUpload}>Upload Data</button>
-					<button onClick={downloadTemplate}>Download Template</button>
-				</div>
-
-				{/* Components or sections for adding, modifying, deleting work items */}
-				{/* Components or sections for viewing statistics about work items */}
-			</div>
-			<div className='action-box'>
-				<h3>Update Work Items</h3>
-				<p>
-					Use the <code>aux_id</code> column to update existing work items from allocation. If the <code>aux_id</code> isn&apos;t found, it will
-					skip it.
-				</p>
-
-				<input
-					type='file'
-					id='file-input'
-					disabled={true}
-				/>
-
-				<div className='flex-row-gap'>
-					<button
-						className='disabled'
-						disabled={true}
-					>
-						Upload Data
-					</button>
-					<button
-						className='disabled'
-						disabled={true}
-					>
-						Download Template
-					</button>
-				</div>
-			</div>
-			<div className='action-box'>
-				<h3>Upload & Update Work Items</h3>
-				<p>
-					Instances of <code>aux_id</code> that are already in the allocation will be updated if the <code>status</code> isn&apos;t &apos;WIP&apos;, and
-					new ones will be added.
-				</p>
-
-				<input
-					type='file'
-					id='file-input'
-					onChange={handleFileChange}
-					disabled={true}
-				/>
-
-				<div className='flex-row-gap'>
-					<button disabled={true} onClick={handleFileUpload}>Upload Data</button>
-					<button disabled={true} onClick={downloadTemplate}>Download Template</button>
-				</div>
-
-				{/* Components or sections for adding, modifying, deleting work items */}
-				{/* Components or sections for viewing statistics about work items */}
-			</div>
-			<div className='action-box'>
-				<h3>Remove Work Items</h3>
-				<p>
-					Use the <code>aux_id</code> column to tag cases with the &apos;Removed&apos; status in order to be excluded from allocation unless updated
-					later on.
-				</p>
-
-				<input
-					type='file'
-					id='file-input'
-					disabled={true}
-				/>
-
-				<div className='flex-row-gap'>
-					<button
-						className='disabled'
-						disabled={true}
-					>
-						Upload Data
-					</button>
-					<button
-						className='disabled'
-						disabled={true}
-					>
-						Download Template
-					</button>
-				</div>
-			</div>
-			<div className='action-box'>
-				<h3>Adhoc Work Items</h3>
-				<p>
-					Insert adhoc tasks into the database, having the possibility to pre-assign the tasks to a specific user. Suitable for daily tasks
-					as &apos;Write an email to shareholders&apos; or &apos;Deep dive on database issue&apos;.
-				</p>
-
-				<input
-					type='file'
-					id='file-input'
-					disabled={true}
-				/>
-
-				<div className='flex-row-gap'>
-					<button
-						className='disabled'
-						disabled={true}
-					>
-						Upload Data
-					</button>
-					<button
-						className='disabled'
-						disabled={true}
-					>
-						Download Template
-					</button>
-				</div>
-			</div>
-			<div className='action-box'>
-				<h3>Delete All Items from Team team_nr</h3>
-				<button
-					className='disabled'
-					disabled={true}
-				>
-					Remove All
-				</button>
-			</div>
 		</div>
 	)
 }
