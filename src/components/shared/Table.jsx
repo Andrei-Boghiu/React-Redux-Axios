@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import "../../assets/tables.css"
 
 export default function Table({ rows, actions = [], title = null }) {
 	if (!rows || rows.length === 0) return null

@@ -78,14 +78,15 @@ export default function Dashboard() {
 				{workItems?.length ? <Table rows={workItems} actions={[WorkItemActions]} title="Lobby" /> : <div>Lobby is empty...</div>}
 
 				<Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`Action Work Item ${actionItemId}`}>
-					<div className='flex-row'>
+					<div className='flex-column'>
 						<div className='box-button' onClick={handleCompleteItem}>
 							<h4>Resolve Case</h4>
-							<button>Resolved</button>
+							<p>Set item status as resolved.</p>
 						</div>
 						<div className='box-button' onClick={handleCompleteItem} >
 							<h4>Send To Admin</h4>
-							<button>Send</button>
+							<p>Escalate work items needing in-depth evaluation to team admins</p>
+							<textarea></textarea>
 						</div>
 						<div className='box-button' onClick={handleCompleteItem} >
 							<h4>Set Follow Up Date</h4>
