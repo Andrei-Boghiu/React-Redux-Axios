@@ -12,25 +12,29 @@ export default function readExcelFile(file) {
                 const buffer = reader.result;
                 wb.xlsx.load(buffer).then(workbook => {
                     workbook.eachSheet((sheet) => {
-                        sheet.eachRow((row) => data.push(row.values))
+                        // Read the first row as headers
+                        const headers = sheet.getRow(1).values.map(header => header && header.toString().toLowerCase());
 
-                        const result = data.slice(1).map(row => {
-                            const obj = {};
-                            row.forEach((value, index) => {
-                                obj[data[0][index]] = value instanceof Date ? value.toISOString() : value;
-                            });
-                            return obj;
+                        // Iterate over the remaining rows as data
+                        sheet.eachRow((row, rowNumber) => {
+                            if (rowNumber > 1) {
+                                const rowData = row.values;
+                                const obj = {};
+                                rowData.forEach((value, index) => {
+                                    obj[headers[index]] = value instanceof Date ? value.toISOString() : value;
+                                });
+                                data.push(obj);
+                            }
                         });
 
-                        const headers = Object.keys(result[0]).map(item => item.toLowerCase());
-
                         resolve({ headers, data });
-                    })
-                })
-            }
+                    });
+                });
+            };
         } catch (error) {
-            console.log(error)
-            reject(error)
+            console.log(error);
+            reject(error);
         }
-    })
+    });
 }
+

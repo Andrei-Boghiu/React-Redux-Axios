@@ -1,0 +1,1 @@
+export const forbiddenHeaders = ["id", "team_id", "created_by", "assignee_id", ""]

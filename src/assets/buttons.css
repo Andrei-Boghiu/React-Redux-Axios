@@ -8,6 +8,7 @@ button,
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
+    width: fit-content;
 }
 
 button:hover,
@@ -32,13 +33,17 @@ button:active,
 }
 
 .btn-link-small {
+    background-color: transparent;
+    border: none;
     color: #0a152f;
     margin: 10px;
     font-size: small;
+    padding: 0;
 }
 
 .btn-link-small:hover {
     text-decoration: underline;
+    background-color: transparent;
 }
 
 .nav-button {

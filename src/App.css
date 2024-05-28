@@ -148,6 +148,9 @@ input[type='file'] {
 }
 
 .action-box {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 	margin: 30px;
 	width: 400px;
 	background-color: #ffffff;

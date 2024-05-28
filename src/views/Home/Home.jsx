@@ -70,6 +70,7 @@ export default function Home() {
 					<p>Create your own team space, invite members, and start managing your work items.</p>
 					{isAuthenticated ? (
 						teams?.some(team => team.approved) && userRoleAuthority <= 3 ? (
+
 							<Link
 								className='btn-primary'
 								to='/create-new-team'

@@ -44,3 +44,8 @@
     cursor: not-allowed;
     border: none;
 }
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}

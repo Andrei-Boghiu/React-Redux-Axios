@@ -1,21 +1,40 @@
 import { API_BASE_URL, get, post, patch } from './config'
 
-export const fetchAssignNewItem = async (headers) => {
-	return await get(`${API_BASE_URL}/api/work/assign-new-item`, headers)
+// Allocation
+export const newItemsAllocation = async (headers, data) => {
+	return await post(`${API_BASE_URL}/api/work/allocation/add-new-items`, data, headers)
 }
 
-export const getUserWorkItems = async (headers) => {
-	return await get(`${API_BASE_URL}/api/work/lobby`, headers)
+export const updateItemsAllocation = async (headers, data) => {
+	return await post(`${API_BASE_URL}/api/work/allocation/update-items`, data, headers)
 }
 
-export const updateItemComplete = async (headers, workItemId) => {
-	return await patch(`${API_BASE_URL}/api/work/set-completed`, { workItemId }, headers)
+export const addUpdateItemsAllocation = async (headers, data) => {
+	return await post(`${API_BASE_URL}/api/work/allocation/add-update-items`, data, headers)
 }
 
-export const updateItemUnassign = async (headers, workItemId) => {
-	return await patch(`${API_BASE_URL}/api/work/set-unassigned`, { workItemId }, headers)
+export const removeItemsAllocation = async (headers, data) => {
+	return await post(`${API_BASE_URL}/api/work/allocation/remove-items`, data, headers)
 }
 
-export const insertWorkItems = async (headers, data) => {
-	return await post(`${API_BASE_URL}/api/work/admin/add-items`, data, headers)
+export const adhocTaskAllocation = async (headers, data) => {
+	return await post(`${API_BASE_URL}/api/work/allocation/add-adhoc-task`, data, headers)
+}
+
+// Distribution
+export const fetchUserLobby = async (headers) => {
+	return await get(`${API_BASE_URL}/api/work/distribution/user-lobby`, headers)
+}
+
+export const fetchNewItem = async (headers) => {
+	return await get(`${API_BASE_URL}/api/work/distribution/get-item`, headers)
+}
+
+// Operations
+export const transferItem = async (headers, workItemId) => {
+	return await patch(`${API_BASE_URL}/api/work/operations/transfer-item`, { workItemId }, headers)
+}
+
+export const updateStatus = async (headers, newStatus) => {
+	return await patch(`${API_BASE_URL}/api/work/operations/update-status`, { newStatus }, headers)
 }
