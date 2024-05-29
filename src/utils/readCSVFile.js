@@ -18,7 +18,9 @@ export default function readCSVFile(file) {
                     if (rowData.length === headers.length) {
                         const obj = {};
                         rowData.forEach((value, index) => {
-                            obj[headers[index]] = value.trim();
+                            const trimmedValue = value.trim();
+                            const isDate = !isNaN(Date.parse(trimmedValue));
+                            obj[headers[index]] = isDate ? new Date(trimmedValue).toISOString() : trimmedValue;
                         });
                         data.push(obj);
                     }
