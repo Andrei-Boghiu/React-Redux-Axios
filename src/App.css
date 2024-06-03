@@ -158,3 +158,21 @@ input[type='file'] {
 	border-radius: 8px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+.info-box {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	margin: 10px;
+	width: auto;
+	background-color: #ffffff;
+	padding: 15px;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transparent-title {
+	color: rgba(0,0,0, 0.4);
+	font-size: medium;
+	font-weight: 800;
+  }

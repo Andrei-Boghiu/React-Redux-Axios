@@ -35,6 +35,6 @@ export const transferItem = async (headers, workItemId) => {
 	return await patch(`${API_BASE_URL}/api/work/operations/transfer-item`, { workItemId }, headers)
 }
 
-export const updateStatus = async (headers, newStatus) => {
-	return await patch(`${API_BASE_URL}/api/work/operations/update-status`, { newStatus }, headers)
+export const updateStatus = async (headers, config) => {
+	return await patch(`${API_BASE_URL}/api/work/operations/update-status`, config, headers)
 }

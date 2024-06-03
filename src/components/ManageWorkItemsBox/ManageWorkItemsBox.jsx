@@ -5,7 +5,7 @@ import readCSVFile from '../../utils/readCSVFile';
 import { useAuthHeaders } from '../../context/useAuthHeaders';
 import { forbiddenHeaders } from './config';
 import { Modal } from '../shared/Modal';
-import { downloadCSV, downloadArrOfObjectsCSV } from '../../utils/downloadCSV';
+import { exportArrOfArrToXLSX, exportArrOfObjToXLSX } from '../../utils/downloadExcel';
 import './styles.css'
 
 export default function ManageWorkItemsBox({ title, description, sendDataApi, disabled = false, requiredHeaders, allHeaders }) {
@@ -37,14 +37,14 @@ export default function ManageWorkItemsBox({ title, description, sendDataApi, di
     }
 
     const downloadTemplateAll = () => {
-        downloadCSV([allHeaders], `${title.toLowerCase().replaceAll(" ", "_")}-all_headers`)
+        exportArrOfArrToXLSX([allHeaders], `${title.toLowerCase().replaceAll(" ", "_")}-all_headers`)
     }
 
     const downloadTemplateRequired = () => {
-        downloadCSV([requiredHeaders], `${title.toLowerCase().replaceAll(" ", "_")}-required_headers`)
+        exportArrOfArrToXLSX([requiredHeaders], `${title.toLowerCase().replaceAll(" ", "_")}-required_headers`);
     }
     const handleDownloadError = () => {
-        downloadArrOfObjectsCSV(errorArr, `${title.toLowerCase().replaceAll(" ", "_")}-error-details`)
+        exportArrOfObjToXLSX(errorArr, `${title.toLowerCase().replaceAll(" ", "_")}-error-details`);
     }
 
     const handleFileChange = (e) => {

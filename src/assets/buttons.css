@@ -83,3 +83,26 @@ button:active,
 .btn-outline {
     border: 1px solid #ffffff;
 }
+
+.small-button {
+	background-color: #40e0d0;
+	color: white;
+	border: none;
+	padding: 6px 12px;
+	font-size: 14px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s, transform 0.2s;
+	margin: 5px;
+	display: inline-block;
+}
+
+.small-button:hover {
+	background-color: #37c6b3;
+	transform: scale(0.98);
+}
+
+.small-button:active {
+	background-color: #2eac9f;
+	transform: scale(0.95);
+}

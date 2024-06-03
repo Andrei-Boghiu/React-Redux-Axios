@@ -1,0 +1,47 @@
+/* SOURCE: https://uiverse.io/elijahgummer/brown-moose-94 */
+.tooltip-container {
+    position: relative;
+    background: var(--background-tooltip-container);
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    font-size: 17px;
+  }
+  
+  .tooltip {
+    --background-tooltip: #6e7681; 
+    position: absolute;
+    top: 50%; 
+    left: calc(100% + 12px); 
+    transform: translateY(-50%);
+    padding: 0.5em;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    background: var(--background-tooltip);
+    color: white; 
+    border-radius: 5px;
+    width: 210px;
+    height: 30px;
+    font-size: 13px;
+    text-align: center;
+  }
+  
+  .tooltip::before {
+    position: absolute;
+    content: "";
+    height: 0.6em;
+    width: 0.6em;
+    top: 50%; 
+    left: -0.3em; 
+    transform: translate(-50%, -50%) rotate(-45deg); 
+    background: var(--background-tooltip); 
+  }
+  
+  .tooltip-container:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }

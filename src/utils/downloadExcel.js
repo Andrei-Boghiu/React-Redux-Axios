@@ -1,3 +1,6 @@
+import Excel from 'exceljs';
+import { saveAs } from 'file-saver';
+
 const convertToCSV = (data) => {
     const csvRows = [];
 
@@ -52,4 +55,43 @@ export const downloadArrOfObjectsCSV = (data, fileName = 'data.csv') => {
     link.click();
 
     document.body.removeChild(link);
+};
+
+export const exportArrOfArrToXLSX = (data, fileName = 'data.xlsx') => {
+    if (fileName.endsWith(".xlsx")) {
+        throw new Error("Invalid Parameter: fileName should end with '.xlsx' extension.")
+    }
+
+    // data param should be an array of arrays.
+
+    const workbook = new Excel.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+
+    data.forEach((row) => {
+        worksheet.addRow(row);
+    });
+
+    workbook.xlsx.writeBuffer().then((buffer) => {
+        const fileData = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(fileData, fileName);
+    });
+};
+
+export const exportArrOfObjToXLSX = (data, fileName = 'data.xlsx') => {
+    const workbook = new Excel.Workbook();
+    const worksheet = workbook.addWorksheet('Sheet1');
+
+    const keys = Object.keys(data[0]);
+
+    worksheet.addRow(keys);
+
+    data.forEach((obj) => {
+        const row = keys.map((key) => obj[key]);
+        worksheet.addRow(row);
+    });
+
+    workbook.xlsx.writeBuffer().then((buffer) => {
+        const fileData = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(fileData, fileName);
+    });
 };
