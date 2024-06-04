@@ -1,4 +1,4 @@
-import { API_BASE_URL, get, post, patch } from './config'
+import { API_BASE_URL, get, post } from './config'
 
 // Allocation
 export const newItemsAllocation = async (headers, data) => {
@@ -32,9 +32,9 @@ export const fetchNewItem = async (headers) => {
 
 // Operations
 export const transferItem = async (headers, workItemId) => {
-	return await patch(`${API_BASE_URL}/api/work/operations/transfer-item`, { workItemId }, headers)
+	return await post(`${API_BASE_URL}/api/work/operations/transfer-item`, { workItemId }, headers)
 }
 
 export const updateStatus = async (headers, config) => {
-	return await patch(`${API_BASE_URL}/api/work/operations/update-status`, config, headers)
+	return await post(`${API_BASE_URL}/api/work/operations/update-status`, config, headers)
 }

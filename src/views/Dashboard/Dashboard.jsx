@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react'
-import { fetchNewItem, fetchUserLobby } from '../../api/workService'
+import { fetchNewItem, fetchUserLobby, updateStatus } from '../../api/workService'
 import { useAuthHeaders } from '../../context/useAuthHeaders';
 import Table from '../../components/shared/Table';
 import { Modal } from '../../components/shared/Modal';
@@ -10,7 +10,13 @@ export default function Dashboard() {
 	const [workItems, setWorkItems] = useState([]);
 	const headers = useAuthHeaders();
 	const [lobbyUpdated, setLobbyUpdated] = useState(false);
-	const [actionItemId, setItemToAction] = useState(undefined)
+	const [actionItemId, setItemToAction] = useState(undefined);
+	const [selectStatus, setNewStatus] = useState('')
+	const [selectResolution, setNewResolution] = useState('');
+	const [followUpDate, setFollowUpDate] = useState('');
+	const [annotation, setAnnotation] = useState();
+	const [releaseItemReason, setReleaseInfo] = useState('');
+	const [modalLoading, setModalLoading] = useState(false)
 
 	const updateLobby = useCallback(async () => {
 		try {
@@ -18,7 +24,6 @@ export default function Dashboard() {
 			setWorkItems(workItems)
 		} catch (error) {
 			console.error('Error fetching work items', error)
-			// alert('Error fetching lobby')
 		}
 	}, [headers])
 
@@ -62,120 +67,75 @@ export default function Dashboard() {
 	}
 
 	// ACTIONS ON WORK ITEM
-	const resolveItem = async (e) => {
-		e.preventDefault();
+	const updateStatusHandler = async (config) => {
 		try {
-			const config = { newStatus: "Resolved", aux_id: actionItemId }
-			console.log("resolveItem", config)
-			//await updateStatus(headers, config);
-			setIsModalOpen(false)
+			console.log(config)
+			setModalLoading(true)
+			await updateStatus(headers, config);
+			console.log("try -> done")
 
 		} catch (error) {
 			console.error(error)
+			console.log("catch -> done")
 		} finally {
-			// updateLobby()
-		}
-	}
-
-	const releaseItem = async (e) => {
-		e.preventDefault();
-		try {
-			const config = { newStatus: "Unassigned", aux_id: actionItemId }
-			console.log("releaseItem", config)
-
-			//await updateStatus(headers, config);
+			updateLobby()
 			setIsModalOpen(false)
-
-		} catch (error) {
-			console.error(error)
-		} finally {
-			// updateLobby()
+			setAnnotation('')
+			setFollowUpDate(null)
+			setNewStatus('')
+			setNewResolution('')
+			setReleaseInfo('')
+			setModalLoading(false)
+			console.log("finally -> done")
 		}
 	}
-
-	const outOfScopeItem = async (e) => {
-		e.preventDefault()
-		try {
-			const config = { newStatus: "Resolved", aux_id: actionItemId }
-			console.log("outOfScopeItem", config)
-
-			//await updateStatus(headers, config);
-			setIsModalOpen(false)
-
-		} catch (error) {
-			console.error(error)
-		} finally {
-			// updateLobby()
-		}
-	}
-
-	const temporarySideline = async (e) => {
-		e.preventDefault()
-		try {
-			const config = { newStatus: "Resolved", aux_id: actionItemId }
-
-			//await updateStatus(headers, config);
-			setIsModalOpen(false)
-
-		} catch (error) {
-			console.error(error)
-		} finally {
-			// updateLobby()
-		}
-	}
-
-	const undeterminedSideline = async (e) => {
-		e.preventDefault()
-		try {
-			const config = { newStatus: "Resolved", aux_id: actionItemId }
-
-			//await updateStatus(headers, config);
-			setIsModalOpen(false)
-
-		} catch (error) {
-			console.error(error)
-		} finally {
-			// updateLobby()
-		}
-	}
-
-	const [selectStatus, setNewStatus] = useState('')
-	const [selectResolution, setNewResolution] = useState('')
-	// const [additionalInfo, setAdditionalInfo] = useState('')
 
 	const actionsMap = {
 		"resolved_successful": {
 			name: "Successful",
-			value: "Successful",
-			api: resolveItem
+			value: "resolved_successful",
+			status: "Resolved",
+			resolution: "Successful",
+			api: updateStatusHandler
 		},
 		"resolved_failure": {
-			name: "Failure",
-			value: "Failure",
-			api: releaseItem
-		},
-		"unresolved_oos": {
 			name: "Out of Scope",
-			value: "Out of Scope",
-			api: outOfScopeItem,
+			value: "resolved_failure",
+			status: "Resolved",
+			resolution: "Out of Scope",
+			api: updateStatusHandler,
 			additional: {
 				annotation: true
 			}
 		},
 		"pending_sideline": {
 			name: "Sideline",
-			value: "Sideline",
-			api: undeterminedSideline,
+			value: "pending_sideline",
+			status: "Pending",
+			resolution: "Sideline",
+			api: updateStatusHandler,
 			additional: {
 				annotation: true
 			}
 		},
 		"pending_followUp": {
 			name: "Follow Up",
-			value: "Follow Up",
-			api: temporarySideline,
+			value: "pending_followUp",
+			status: "Pending",
+			resolution: "Follow Up",
+			api: updateStatusHandler,
 			additional: {
 				date_time: true
+			}
+		},
+		"release_item": {
+			name: "Release Item",
+			value: "release_item",
+			status: "Unassigned",
+			resolution: "",
+			api: updateStatusHandler,
+			additional: {
+				release_reason: true
 			}
 		}
 	};
@@ -183,13 +143,14 @@ export default function Dashboard() {
 	const handleStatusChange = (event) => {
 		const newValue = event.target.value;
 		setNewStatus(newValue);
-		console.log("status", newValue);
+		setNewResolution('');
+		setAnnotation('')
 	};
 
 	const handleResolutionChange = (event) => {
 		const newValue = event.target.value;
 		setNewResolution(newValue);
-		console.log("resolution", newValue);
+		setAnnotation('')
 	};
 
 	const ResolutionSelect = ({ selectedVal, stateHandler, stateValue }) => {
@@ -197,23 +158,58 @@ export default function Dashboard() {
 			return <select value={stateValue} onChange={stateHandler} />;
 		}
 
-		const resolution = actionsMap[selectedVal];
-		const keys = Object.keys(resolution);
+		const resolutions = Object.values(actionsMap).filter(action => action.value.startsWith(selectedVal));
 
 		return (
-			<select value={stateValue} onChange={stateHandler}>
+			<select value={stateValue} onChange={stateHandler} required>
 				<option value="">Select an option</option>
-				{keys.map((option) => {
-					const data = resolution[option];
-					return (
-						<option key={data.value} value={data.value}>
-							{data.name}
-						</option>
-					);
-				})}
+				{resolutions.map((option) => (
+					<option key={option.value} value={option.value}>
+						{option.name}
+					</option>
+				))}
 			</select>
 		);
 	};
+
+	ResolutionSelect.propTypes = {
+		selectedVal: PropTypes.string.isRequired,
+		stateHandler: PropTypes.func.isRequired,
+		stateValue: PropTypes.string.isRequired
+	}
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		try {
+			const selectedAction = actionsMap[selectResolution];
+			const IncludesAnnotation = selectedAction.additional?.annotation
+			const IncludesFollowUp = selectedAction.additional?.date_time
+			const releaseInfo = selectedAction.additional?.release_reason
+
+			const config = {
+				status: selectedAction.status,
+				resolution: selectedAction.resolution,
+				aux_id: actionItemId
+			}
+			if (IncludesAnnotation) {
+				config["annotation"] = annotation;
+			}
+
+			if (IncludesFollowUp) {
+				config["follow_up_date"] = new Date(followUpDate).toISOString();
+			}
+
+			if (releaseInfo) {
+				config["additional_info"] = releaseItemReason;
+			}
+
+			selectedAction.api(config);
+		} catch (error) {
+			console.error(error)
+		} finally {
+			setAnnotation('')
+		}
+	}
 
 	return (
 		<>
@@ -225,15 +221,16 @@ export default function Dashboard() {
 					onClose={() => setIsModalOpen(false)}
 					title={`Action Work Item ${actionItemId || 'N/A'}`}
 				>
-					<div className='grid-container'>
-						<form>
+					<div className=''>
+						<form onSubmit={handleSubmit}>
+							{modalLoading && <p>Loading...</p>}
 							<label>
 								Status:
 								<select value={selectStatus} onChange={handleStatusChange} required>
 									<option value="">Select an option</option>
 									<option value="resolved">Resolved</option>
-									<option value="unresolved">Unresolved</option>
 									<option value="pending">Pending</option>
+									<option value="release">Release</option>
 								</select>
 							</label>
 
@@ -247,6 +244,29 @@ export default function Dashboard() {
 									/>
 								</label>
 							}
+
+							{selectResolution && actionsMap[selectResolution]?.additional?.annotation && (
+								<label>
+									Annotation:
+									<input type="text" required value={annotation} onChange={e => setAnnotation(e.target.value)} />
+								</label>
+							)}
+
+							{selectResolution && actionsMap[selectResolution]?.additional?.date_time && (
+								<label>
+									Date and Time:
+									<input type="datetime-local" required value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} />
+								</label>
+							)}
+
+							{selectResolution && actionsMap[selectResolution]?.additional?.release_reason && (
+								<label>
+									Release reason:
+									<input type="text" required value={releaseItemReason} onChange={(e) => setReleaseInfo(e.target.value)} />
+								</label>
+							)}
+
+							<button disabled={modalLoading} className={`${modalLoading ? 'disabled' : ''}`} type="submit">{modalLoading ? "Loading..." : "Submit"}</button>
 						</form>
 					</div>
 				</Modal>

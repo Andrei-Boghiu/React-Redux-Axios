@@ -50,6 +50,12 @@
     flex-direction: row;
 }
 
+.flex-row-between {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .flex-column {
     display: flex;
     flex-direction: column;
