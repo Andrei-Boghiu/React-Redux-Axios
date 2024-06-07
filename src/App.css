@@ -78,6 +78,7 @@ form {
 input[type='text'],
 input[type='email'],
 input[type='password'],
+input[type='datetime-local'],
 textarea,
 select {
 	width: 95%;
@@ -172,7 +173,7 @@ input[type='file'] {
 }
 
 .transparent-title {
-	color: rgba(0,0,0, 0.4);
+	color: rgba(0, 0, 0, 0.4);
 	font-size: medium;
 	font-weight: 800;
-  }
+}

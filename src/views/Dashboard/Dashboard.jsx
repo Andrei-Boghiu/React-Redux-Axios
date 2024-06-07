@@ -4,19 +4,33 @@ import { fetchNewItem, fetchUserLobby, updateStatus } from '../../api/workServic
 import { useAuthHeaders } from '../../context/useAuthHeaders';
 import Table from '../../components/shared/Table';
 import { Modal } from '../../components/shared/Modal';
+import { workItemsActions } from './workItemsActions';
 
 export default function Dashboard() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [workItems, setWorkItems] = useState([]);
 	const headers = useAuthHeaders();
 	const [lobbyUpdated, setLobbyUpdated] = useState(false);
-	const [actionItemId, setItemToAction] = useState(undefined);
-	const [selectStatus, setNewStatus] = useState('')
-	const [selectResolution, setNewResolution] = useState('');
+	const [actionItemId, setItemToAction] = useState('');
+
+	// action on work item
+	const [selectedAction, setSelectedAction] = useState('');
+	const [selectedActionData, setSelectedActionData] = useState('');
+
 	const [followUpDate, setFollowUpDate] = useState('');
-	const [annotation, setAnnotation] = useState();
-	const [releaseItemReason, setReleaseInfo] = useState('');
-	const [modalLoading, setModalLoading] = useState(false)
+	const [annotation, setAnnotation] = useState('');
+
+	// useState loaders
+	const [modalLoading, setModalLoading] = useState(false);
+	const [getWorkLoading, setGetWorkLoading] = useState(false);
+
+	const resetValues = () => {
+		setIsModalOpen(false)
+		setAnnotation('')
+		setFollowUpDate('')
+		setSelectedAction('')
+		setModalLoading(false)
+	}
 
 	const updateLobby = useCallback(async () => {
 		try {
@@ -26,6 +40,12 @@ export default function Dashboard() {
 			console.error('Error fetching work items', error)
 		}
 	}, [headers])
+
+
+	useEffect(() => {
+		const newActionDetails = workItemsActions.find(item => item.id == selectedAction)
+		setSelectedActionData(newActionDetails)
+	}, [selectedAction]);
 
 	useEffect(() => {
 		console.log(`useEffect -> Dashboard`);
@@ -37,6 +57,7 @@ export default function Dashboard() {
 	}, [updateLobby, lobbyUpdated])
 
 	const handleGetWork = async () => {
+		setGetWorkLoading(true)
 		try {
 			const workItemsData = await fetchNewItem(headers)
 			setWorkItems(workItemsData)
@@ -48,6 +69,8 @@ export default function Dashboard() {
 			} else {
 				alert('Error fetching lobby')
 			}
+		} finally {
+			setGetWorkLoading(false)
 		}
 	}
 
@@ -66,148 +89,41 @@ export default function Dashboard() {
 		rowData: PropTypes.object.isRequired
 	}
 
-	// ACTIONS ON WORK ITEM
-	const updateStatusHandler = async (config) => {
-		try {
-			console.log(config)
-			setModalLoading(true)
-			await updateStatus(headers, config);
-			console.log("try -> done")
-
-		} catch (error) {
-			console.error(error)
-			console.log("catch -> done")
-		} finally {
-			updateLobby()
-			setIsModalOpen(false)
-			setAnnotation('')
-			setFollowUpDate(null)
-			setNewStatus('')
-			setNewResolution('')
-			setReleaseInfo('')
-			setModalLoading(false)
-			console.log("finally -> done")
-		}
-	}
-
-	const actionsMap = {
-		"resolved_successful": {
-			name: "Successful",
-			value: "resolved_successful",
-			status: "Resolved",
-			resolution: "Successful",
-			api: updateStatusHandler
-		},
-		"resolved_failure": {
-			name: "Out of Scope",
-			value: "resolved_failure",
-			status: "Resolved",
-			resolution: "Out of Scope",
-			api: updateStatusHandler,
-			additional: {
-				annotation: true
-			}
-		},
-		"pending_sideline": {
-			name: "Sideline",
-			value: "pending_sideline",
-			status: "Pending",
-			resolution: "Sideline",
-			api: updateStatusHandler,
-			additional: {
-				annotation: true
-			}
-		},
-		"pending_followUp": {
-			name: "Follow Up",
-			value: "pending_followUp",
-			status: "Pending",
-			resolution: "Follow Up",
-			api: updateStatusHandler,
-			additional: {
-				date_time: true
-			}
-		},
-		"release_item": {
-			name: "Release Item",
-			value: "release_item",
-			status: "Unassigned",
-			resolution: "",
-			api: updateStatusHandler,
-			additional: {
-				release_reason: true
-			}
-		}
-	};
-
-	const handleStatusChange = (event) => {
-		const newValue = event.target.value;
-		setNewStatus(newValue);
-		setNewResolution('');
-		setAnnotation('')
-	};
-
-	const handleResolutionChange = (event) => {
-		const newValue = event.target.value;
-		setNewResolution(newValue);
-		setAnnotation('')
-	};
-
-	const ResolutionSelect = ({ selectedVal, stateHandler, stateValue }) => {
-		if (!selectedVal) {
-			return <select value={stateValue} onChange={stateHandler} />;
-		}
-
-		const resolutions = Object.values(actionsMap).filter(action => action.value.startsWith(selectedVal));
-
-		return (
-			<select value={stateValue} onChange={stateHandler} required>
-				<option value="">Select an option</option>
-				{resolutions.map((option) => (
-					<option key={option.value} value={option.value}>
-						{option.name}
-					</option>
-				))}
-			</select>
-		);
-	};
-
-	ResolutionSelect.propTypes = {
-		selectedVal: PropTypes.string.isRequired,
-		stateHandler: PropTypes.func.isRequired,
-		stateValue: PropTypes.string.isRequired
-	}
-
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const selectedAction = actionsMap[selectResolution];
-			const IncludesAnnotation = selectedAction.additional?.annotation
-			const IncludesFollowUp = selectedAction.additional?.date_time
-			const releaseInfo = selectedAction.additional?.release_reason
+			const annotationCheck = selectedActionData.annotation.mandatory && !annotation
+			const followUpCheck = selectedActionData.followUpDate.mandatory && !followUpDate
+
+			if (annotationCheck || followUpCheck || !selectedActionData || !actionItemId) {
+				alert("Please complete all relevant fields")
+				return;
+			}
+
+			setModalLoading(true);
 
 			const config = {
-				status: selectedAction.status,
-				resolution: selectedAction.resolution,
-				aux_id: actionItemId
-			}
-			if (IncludesAnnotation) {
-				config["annotation"] = annotation;
+				aux_id: actionItemId,
+				status: selectedActionData.status,
+				resolution: selectedActionData.resolution,
 			}
 
-			if (IncludesFollowUp) {
-				config["follow_up_date"] = new Date(followUpDate).toISOString();
+			if (annotation) {
+				config['annotation'] = annotation
 			}
 
-			if (releaseInfo) {
-				config["additional_info"] = releaseItemReason;
+			if (followUpDate) {
+				config['follow_up_date'] = followUpDate
 			}
 
-			selectedAction.api(config);
+			await updateStatus(headers, config);
+
 		} catch (error) {
 			console.error(error)
 		} finally {
-			setAnnotation('')
+			updateLobby()
+			resetValues()
+			console.log("finally -> done")
 		}
 	}
 
@@ -218,60 +134,56 @@ export default function Dashboard() {
 
 				<Modal
 					isOpen={isModalOpen}
-					onClose={() => setIsModalOpen(false)}
+					onClose={() => {
+						resetValues()
+					}}
 					title={`Action Work Item ${actionItemId || 'N/A'}`}
 				>
-					<div className=''>
+					<div className='work-item-actions-box'>
 						<form onSubmit={handleSubmit}>
 							{modalLoading && <p>Loading...</p>}
 							<label>
 								Status:
-								<select value={selectStatus} onChange={handleStatusChange} required>
+								<select value={selectedAction} onChange={(e) => setSelectedAction(e.target.value)} required>
 									<option value="">Select an option</option>
-									<option value="resolved">Resolved</option>
-									<option value="pending">Pending</option>
-									<option value="release">Release</option>
+									{workItemsActions.map(action =>
+										<option value={action.id} key={action.id}>{action.name}</option>
+									)}
 								</select>
 							</label>
 
-							{selectStatus &&
+							{selectedActionData ? selectedActionData.annotation.allowed &&
 								<label>
-									Resolution:
-									<ResolutionSelect
-										stateHandler={handleResolutionChange}
-										stateValue={selectResolution}
-										selectedVal={selectStatus}
+									Annotation:  {selectedActionData.annotation.mandatory && <span className='red'>(Required)</span>}
+									<input
+										type='text'
+										value={annotation}
+										onChange={(e) => setAnnotation(e.target.value)}
+										required={selectedActionData.annotation.mandatory}
 									/>
 								</label>
+								: null
 							}
 
-							{selectResolution && actionsMap[selectResolution]?.additional?.annotation && (
+							{selectedActionData ? selectedActionData.followUpDate.allowed &&
 								<label>
-									Annotation:
-									<input type="text" required value={annotation} onChange={e => setAnnotation(e.target.value)} />
+									Follow Up Date: {selectedActionData.followUpDate.mandatory && <span className='red'>(Required)</span>} <br />
+									<input
+										type='datetime-local'
+										value={followUpDate}
+										onChange={(e) => setFollowUpDate(e.target.value)}
+										required={selectedActionData.followUpDate.mandatory}
+									/>
 								</label>
-							)}
-
-							{selectResolution && actionsMap[selectResolution]?.additional?.date_time && (
-								<label>
-									Date and Time:
-									<input type="datetime-local" required value={followUpDate} onChange={(e) => setFollowUpDate(e.target.value)} />
-								</label>
-							)}
-
-							{selectResolution && actionsMap[selectResolution]?.additional?.release_reason && (
-								<label>
-									Release reason:
-									<input type="text" required value={releaseItemReason} onChange={(e) => setReleaseInfo(e.target.value)} />
-								</label>
-							)}
+								: null
+							}
 
 							<button disabled={modalLoading} className={`${modalLoading ? 'disabled' : ''}`} type="submit">{modalLoading ? "Loading..." : "Submit"}</button>
 						</form>
 					</div>
 				</Modal>
 			</div>
-			<button onClick={handleGetWork}>Get Work</button>
+			<button className={`${getWorkLoading ? 'disabled' : ''}`} disabled={getWorkLoading} onClick={handleGetWork}> {getWorkLoading ? 'Loading...' : 'Get Work'}</button>
 		</>
 	)
 }
