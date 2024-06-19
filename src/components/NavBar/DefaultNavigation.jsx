@@ -13,7 +13,7 @@ export default function DefaultNavigation() {
 			{userRoleAuthority <= 4 && (
 				<>
 					<NavButton to='/work-items-management'>Work Items Management</NavButton>
-					<NavButton to='/team-statistics'>Team Statistics</NavButton>
+					<NavButton to='/allocation-overview'>Allocation Overview</NavButton>
 				</>
 			)}
 		</>

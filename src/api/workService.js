@@ -38,3 +38,7 @@ export const transferItem = async (headers, workItemId) => {
 export const updateStatus = async (headers, config) => {
 	return await post(`${API_BASE_URL}/api/work/operations/update-status`, config, headers)
 }
+
+export const fetchIngestionOverview = async (headers) => {
+	return await get(`${API_BASE_URL}/api/work/overview/ingestion`, headers)
+}

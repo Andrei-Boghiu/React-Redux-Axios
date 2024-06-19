@@ -18,7 +18,7 @@ export default function WorkItemsManagement() {
 	const options = [
 		{
 			id: 1,
-			title: "Upload Work Items",
+			title: "Upload New Work Items",
 			description: "Add new work items to allocation. Duplicates of `aux_id` will not be allowed",
 			sendDataApi: newItemsAllocation,
 			requiredHeaders: ["aux_id", "aux_tool"],
@@ -27,7 +27,7 @@ export default function WorkItemsManagement() {
 		},
 		{
 			id: 2,
-			title: "Update Work Items",
+			title: "Update Existing Work Items",
 			description: "Use the `aux_id` column to update existing work items from allocation. If the `aux_id` isn&apos;t found, it will skip it.",
 			sendDataApi: updateItemsAllocation,
 			requiredHeaders: ["aux_id"],

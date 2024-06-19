@@ -11,7 +11,6 @@ import UserManagement from './views/Management/UsersManagement'
 import TeamManagement from './views/Management/TeamManagement'
 import TeamsManagement from './views/Management/TeamsManagement'
 import WorkItemsManagement from './views/WorkItemsManagement/WorkItemsManagement'
-import TeamStatistics from './views/Statistics/TeamStatistics'
 import TeamsStatistics from './views/Statistics/TeamsStatistics'
 import NotFound from './views/NotFound'
 import { AuthProvider } from './context/AuthProvider'
@@ -22,6 +21,7 @@ import './assets/buttons.css'
 import './assets/helpers.css'
 import './assets/tool-tip.css'
 import AdminTeamManagement from './views/Management/AdminTeamManagement'
+import AllocationOverview from './views/WorkItemsManagement/AllocationOverview';
 
 function RoleRouteModel({ children, authorityLevel }) {
 	const { isAuthenticated, userRoleAuthority, teams } = useAuth()
@@ -166,10 +166,10 @@ export default function App() {
 							}
 						/>
 						<Route
-							path='/team-statistics'
+							path='/allocation-overview'
 							element={
 								<AllocatorRoute>
-									<TeamStatistics />
+									<AllocationOverview />
 								</AllocatorRoute>
 							}
 						/>

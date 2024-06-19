@@ -13,6 +13,14 @@ export default function Dashboard() {
 	const [lobbyUpdated, setLobbyUpdated] = useState(false);
 	const [actionItemId, setItemToAction] = useState('');
 
+	const [wipItems, setWipItems] = useState([]);
+	const [pendingItems, setPendingItems] = useState([]);
+
+	useEffect(() => {
+		setWipItems(() => workItems.filter(item => item.status === 'Work in Progress'));
+		setPendingItems(() => workItems.filter(item => item.status === 'Pending'));
+	}, [workItems])
+
 	// action on work item
 	const [selectedAction, setSelectedAction] = useState('');
 	const [selectedActionData, setSelectedActionData] = useState('');
@@ -40,7 +48,6 @@ export default function Dashboard() {
 			console.error('Error fetching work items', error)
 		}
 	}, [headers])
-
 
 	useEffect(() => {
 		const newActionDetails = workItemsActions.find(item => item.id == selectedAction)
@@ -130,7 +137,9 @@ export default function Dashboard() {
 	return (
 		<>
 			<div>
-				{workItems?.length ? <Table rows={workItems} actions={[WorkItemActions]} title="Lobby" /> : <div>Lobby is empty...</div>}
+				{pendingItems?.length ? <Table rows={pendingItems} actions={[WorkItemActions]} title="Pending Items" /> : null}
+				{wipItems?.length ? <Table rows={wipItems} actions={[WorkItemActions]} title="Work in Progress" /> : null}
+				{!workItems?.length ? <div>Lobby is empty...</div> : null}
 
 				<Modal
 					isOpen={isModalOpen}

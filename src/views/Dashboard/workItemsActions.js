@@ -30,6 +30,20 @@ export const workItemsActions = [
     },
     {
         id: 3,
+        name: 'Found Already Resolved',
+        status: 'Resolved',
+        resolution: 'Found Already Resolved',
+        annotation: {
+            allowed: true,
+            mandatory: false,
+        },
+        followUpDate: {
+            allowed: false,
+            mandatory: false
+        }
+    },
+    {
+        id: 4,
         name: 'Pending - Sideline',
         status: 'Pending',
         resolution: 'Sideline',
@@ -43,7 +57,7 @@ export const workItemsActions = [
         }
     },
     {
-        id: 4,
+        id: 5,
         name: 'Pending - Follow Up',
         status: 'Pending',
         resolution: 'Follow Up',
@@ -57,7 +71,7 @@ export const workItemsActions = [
         }
     },
     {
-        id: 5,
+        id: 6,
         name: 'Release Item',
         status: 'Unassigned',
         resolution: '',
