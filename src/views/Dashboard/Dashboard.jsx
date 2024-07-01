@@ -5,10 +5,13 @@ import { useAuthHeaders } from '../../context/useAuthHeaders';
 import Table from '../../components/shared/Table';
 import { Modal } from '../../components/shared/Modal';
 import { workItemsActions } from './workItemsActions';
+import { fetchCountAvailableWorkItems } from '../../api/statsService';
+import Spinner from '../../components/Loaders/Spinner';
 
 export default function Dashboard() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [workItems, setWorkItems] = useState([]);
+	const [totalAvailable, setTotalAvailable] = useState(null);
 	const headers = useAuthHeaders();
 	const [lobbyUpdated, setLobbyUpdated] = useState(false);
 	const [actionItemId, setItemToAction] = useState('');
@@ -16,10 +19,26 @@ export default function Dashboard() {
 	const [wipItems, setWipItems] = useState([]);
 	const [pendingItems, setPendingItems] = useState([]);
 
+	const [loading, setLoading] = useState(false);
+
 	useEffect(() => {
 		setWipItems(() => workItems.filter(item => item.status === 'Work in Progress'));
 		setPendingItems(() => workItems.filter(item => item.status === 'Pending'));
 	}, [workItems])
+
+	useEffect(() => {
+		fetchCountAvailableWorkItems(headers)
+			.then(res => {
+				const count = res?.total_available_work_items;
+				if (count) {
+					setTotalAvailable(count);
+				}
+			})
+			.catch(err => {
+				console.error(err)
+			})
+
+	}, [workItems, headers])
 
 	// action on work item
 	const [selectedAction, setSelectedAction] = useState('');
@@ -42,10 +61,13 @@ export default function Dashboard() {
 
 	const updateLobby = useCallback(async () => {
 		try {
+			setLoading(true)
 			const workItems = await fetchUserLobby(headers)
 			setWorkItems(workItems)
 		} catch (error) {
 			console.error('Error fetching work items', error)
+		} finally {
+			setLoading(false)
 		}
 	}, [headers])
 
@@ -134,8 +156,16 @@ export default function Dashboard() {
 		}
 	}
 
+	if (loading) {
+		return <Spinner />
+	}
+
 	return (
 		<>
+			{
+				totalAvailable ? <h4>Total available items: {totalAvailable}</h4> : null
+			}
+
 			<div>
 				{pendingItems?.length ? <Table rows={pendingItems} actions={[WorkItemActions]} title="Pending Items" /> : null}
 				{wipItems?.length ? <Table rows={wipItems} actions={[WorkItemActions]} title="Work in Progress" /> : null}

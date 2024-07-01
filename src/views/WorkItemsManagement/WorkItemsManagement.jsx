@@ -1,7 +1,11 @@
 import ManageWorkItemsBox from '../../components/ManageWorkItemsBox/ManageWorkItemsBox';
-import { newItemsAllocation, updateItemsAllocation, addUpdateItemsAllocation, removeItemsAllocation, adhocTaskAllocation } from '../../api/workService'
+import { newItemsAllocation, updateItemsAllocation, addUpdateItemsAllocation, removeItemsAllocation, adhocTaskAllocation, truncateInflowTable } from '../../api/workService'
+import { useState } from 'react';
+import { useAuthHeaders } from '../../context/useAuthHeaders';
 
 export default function WorkItemsManagement() {
+	const [loading, setLoading] = useState(false);
+	const headers = useAuthHeaders()
 
 	const acceptableHeaders = [
 		"aux_id",
@@ -60,17 +64,23 @@ export default function WorkItemsManagement() {
 			requiredHeaders: ["aux_subject", "aux_status"],
 			allHeaders: ["aux_subject", "aux_status", "aux_id", "priority", "due_date"],
 			disabled: true
-		},
-		{
-			id: 6,
-			title: "Delete All Items from Team ${team_id}",
-			description: "This will all the data from the team database! Will require admin approval!",
-			sendDataApi: () => { console.log("he he") },
-			requiredHeaders: ["aux_id", "priority"],
-			allHeaders: ["aux_id", "priority"],
-			disabled: true
-		},
+		}
 	]
+
+
+	const handleTruncateInflow = async () => {
+		try {
+			setLoading(true);
+
+			const serverRes = await truncateInflowTable(headers);
+			console.log(serverRes);
+
+		} catch (error) {
+			console.error(error)
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	return (
 		<div className='flex-wrap'>
@@ -86,6 +96,21 @@ export default function WorkItemsManagement() {
 						allHeaders={option.allHeaders} />
 				)
 			}
+
+			<div className='action-box'>
+				<h3>Remove All Items</h3>
+				<p>
+					Remove all work items from your team
+				</p>
+
+				<button
+					onClick={handleTruncateInflow}
+					disabled={loading}
+					className={loading ? "disabled" : ""}
+				>
+					{loading ? 'Loading...' : 'Remove'}
+				</button>
+			</div>
 		</div>
 	)
 }

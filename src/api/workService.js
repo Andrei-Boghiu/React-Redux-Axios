@@ -21,6 +21,10 @@ export const adhocTaskAllocation = async (headers, data) => {
 	return await post(`${API_BASE_URL}/api/work/allocation/add-adhoc-task`, data, headers)
 }
 
+export const truncateInflowTable = async (headers) => {
+	return await get(`${API_BASE_URL}/api/work/allocation/truncate-inflow`, headers)
+}
+
 // Distribution
 export const fetchUserLobby = async (headers) => {
 	return await get(`${API_BASE_URL}/api/work/distribution/user-lobby`, headers)
@@ -42,3 +46,5 @@ export const updateStatus = async (headers, config) => {
 export const fetchIngestionOverview = async (headers) => {
 	return await get(`${API_BASE_URL}/api/work/overview/ingestion`, headers)
 }
+
+
